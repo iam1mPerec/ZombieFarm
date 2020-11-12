@@ -1,0 +1,5953 @@
+#include <iostream>
+#include <fstream>
+#include "str.h"
+#include "kbhit.h"
+#include "GameMenu.h"
+#include "MainMenu.h"
+#include "ptime.h"
+#include "texts_2.h"
+#include "resources.h"
+#include "keys.h"
+#include "screen.h"
+#include "Time.h"
+#include "Options.h"
+#include "Shop.h"
+
+using namespace std;
+
+ptime GameMenu::GlobalTime(1,4,45);
+void GameMenu::show()
+{
+    while (!win)
+    {
+        while (side.getMenuOption() == options::main)
+        {
+            side.clear();
+            side.option_main();
+            functional();
+            manipulator_Main();
+        }
+        while (side.getMenuOption() == options::planting)
+        {
+            side.clear();
+            side.option_planting();
+            functional();
+            manipulator_Plants();
+        }
+        while (side.getMenuOption() == options::building)
+        {
+            side.clear();
+            side.option_building();
+            functional();
+            manipulator_Building();
+        }
+
+        while (side.getMenuOption() == options::working)
+        {
+            side.clear();
+            side.option_working();
+            functional();
+            manipulator_Work();
+        }
+
+        while (side.getMenuOption() == options::quiting)
+        {
+            side.clear();
+            side.option_quiting();
+            functional();
+            manipulator_Exit();
+        }
+      
+        while (side.getMenuOption() == options::plantSelectorStart)
+        {
+            side.clearSelector();
+            side.clear();
+            side.option_selecting();
+            functional();
+            manipulator_Select();
+        }
+        while (side.getMenuOption() == options::plantSelectorEnd)
+        {
+            functional();
+            manipulator_Capture();
+        }
+        while (side.getMenuOption() == options::shopping)
+        {
+            showDialog();
+            side.clear();
+            side.option_shop();
+            functional();
+            manipulator_Shop();
+        }
+        while (side.getMenuOption() == options::sell)
+        {
+            side.clear();
+            side.option_sell();
+            functional();
+            manipulator_Sell();
+        }
+        
+        while (side.getMenuOption() == options::buy)
+        {
+            side.clear();
+            side.option_buy();
+            functional();
+            manipulator_Buy();
+        }
+
+        while (side.getMenuOption() == options::amount)
+        {
+            side.clear();
+            side.option_amount();
+            functional();
+            manipulator_Amount();
+        }
+        
+        while (side.getMenuOption() == options::choosing)
+        {
+            side.clear();
+            side.option_swap();
+            functional();
+            manipulator_Choosing();
+        }
+        
+        while (side.getMenuOption() == options::battle)
+        {
+            side.clear();
+            side.option_battle();
+            functional();
+            manipulator_Battle();
+        }
+        
+        while (side.getMenuOption() == options::lvling)
+        {
+            side.clear();
+            side.option_lvling();
+            functional();
+            manipulator_lvling();
+        }
+        
+        while (side.getMenuOption() == options::upgrading)
+        {
+            side.clear();
+            side.option_upgrading();
+            functional();
+            manipulator_upgrading();
+        }
+        
+        while (side.getMenuOption() == options::slashing)
+        {
+            side.clear();
+            side.option_slashing();
+            functional();
+            manipulator_Slashing();
+        }
+        
+        while (side.getMenuOption() == options::attacking)
+        {
+            side.clear();
+            side.option_attack();
+            functional();
+            manipulator_Attack();
+        }
+        
+        while (side.getMenuOption() == options::equiping)
+        {
+            side.clear();
+            side.option_equip();
+            functional();
+            manipulator_equip();
+        }
+        
+        while (side.getMenuOption() == options::sorting)
+        {
+            side.clear();
+            functional();
+            manipulator_Inventory();
+        }
+        
+        while (side.getMenuOption() == options::healing)
+        {
+            side.clear();
+            side.option_healing();
+            functional();
+            manipulator_Choosing();
+        }
+    }
+}
+
+void GameMenu::manipulator_lvling()
+{
+    bool exit = false;
+    int g = '0';
+    g = getchar();
+
+    if(g == keys::A||g == keys::a)
+    {
+        if (x2==0)
+        {
+            x2 = 2;
+        }
+        else
+        {
+            x2--;
+        }
+    }
+    
+    if(g == keys::D||g == keys::d)
+    {
+        if (x2 == 2)
+        {
+            x2 = 0;
+        }
+        else
+        {
+            x2++;
+        }
+    }
+    
+    if(g == keys::I||g == keys::i)
+    {
+        switch (x2)
+        {
+            case 0:
+                Dial.clearBox();
+                Dial.AddQuote("Strong And Durable. This Unit is ment to protect");
+                break;
+            case 1:
+                Dial.clearBox();
+                Dial.AddQuote("This unit does a lot of damage, but better off behind a Tank");
+                break;
+            case 2:
+                Dial.clearBox();
+                Dial.AddQuote("This unit will help your troops last longer in battle");
+                break;
+                
+            default:
+                break;
+        }
+    }
+        
+    if(g == keys::E||g == keys::e)
+    {
+        side.setMenuOption(options::battle);
+        exit = true;
+        resetVariables();
+    }
+    
+    if(g == keys::F||g == keys::f)
+    {
+        switch (x2)
+        {
+            case 0:
+                troops.addTank(y1, x1);
+                break;
+            case 1:
+                troops.addSniper(y1, x1);
+                break;
+            case 2:
+                troops.addHealer(y1, x1);
+                break;
+            
+            default:
+                Dial.AddQuote("Error!");
+        }
+        resetVariables();
+        side.setMenuOption(options::battle);
+        exit = true;
+    }
+    clear();
+    if (!exit)
+    {
+        choosing2lvl(x2);
+        drawUpgrade();
+    }
+    else
+    {
+        drawAll();
+    }
+}
+void GameMenu::resetTurns()
+{
+    troops.resetTurns();
+    horde.resetTurns();
+}
+
+void GameMenu::manipulator_Attack()
+{
+        bool exit = false;
+        int g;
+        g = getchar();
+        
+        if(g==keys::w || g==keys::W || g==keys::S || g==keys::s)
+        {
+            side.slider(g);
+        }
+        
+        if((g == keys::f||g == keys::F) && side.getOption() == options::attack)
+        {
+            resetVariables();
+            drawAll();
+            drawUndead();
+            zombieSelector();
+            side.setMenuOption(options::slashing);
+        }
+        
+        if((g == keys::f||g == keys::F) && side.getOption() == options::skills)
+        {
+//            heal();
+            scaterShot();
+            exit = true;
+        }
+        
+        if((g == keys::f||g == keys::F) && side.getOption() == options::items)
+        {
+            int position = troops.getAttackerPos();
+            y1 = position/4;
+            x1 = position%4;
+            drawInventory();
+            x2 = 5;
+            itemSelector();
+            side.setMenuOption(options::sorting);
+            exit = true;
+        }
+        
+        if((g == keys::f||g == keys::F) && side.getOption() == options::protect)
+        {
+            resetVariables();
+            troops.getAttacker()->setShild();
+            drawAll();
+            side.setOption(0);
+            whosTurn();
+        }
+    
+        if(g == keys::c||g == keys::C)
+        {
+            Dial.clearBox();
+        }
+    
+        if(!exit)
+        {
+            selector();
+        }
+}
+
+void GameMenu::heal()
+{
+    resetVariables();
+    side.setMenuOption(options::healing);
+    choose(y2, x2);
+}
+
+void GameMenu::scaterShot()
+{
+    troops.getAttacker()->usedTurn();
+    massAttack(80);
+    whosTurn();
+    
+    side.setOption(0);
+}
+
+void GameMenu::HumanSlashedAnimation(const int position)
+{
+    int countDown = 6;
+    int row = position/4;
+    int card = position%4;
+    for (int j = 0; j<10; j++)
+    {
+        for (int i = 0; i<21; i++)
+        {
+            screen[j+BottomPlank - 20 + row*10][1 + i + card*22] = screen[j+BottomPlank - 20 + row*10][2 + i + card*22];
+        }
+    }
+    
+    for (int j = 0; j<10; j++)
+    {
+        screen[j+BottomPlank - 20 + row*10][22 + card*22] = ' ';
+    }
+    
+    countDown--;
+    print();
+    usleep(110000);
+    while (countDown)
+    {
+        if (countDown%2 == 0)
+        {
+            for (int j = 0; j<10; j++)
+            {
+                for (int i = 0; i<21; i++)
+                {
+                    screen[j+BottomPlank - 20 + row*10][1 + i + card*22] = screen[j+BottomPlank - 20 + row*10][3 + i + card*22];
+                }
+            }
+            
+            for (int j = 0; j<10; j++)
+            {
+                for (int i = 0; i<2; i++)
+                {
+                    screen[j+BottomPlank - 20 + row*10][22 + i + card*22] = ' ';
+                }
+            }
+        }
+        
+        else if(countDown%2 != 0)
+        {
+            for (int j = 0; j<10; j++)
+            {
+                for (int i = 21; i>0; i--)
+                {
+                    screen[j+BottomPlank - 20 + row*10][2 + i + card*22] = screen[j+BottomPlank - 20 + row*10][i + card*22];
+                }
+            }
+            for (int j = 0; j<10; j++)
+            {
+                for (int i = 0; i<2; i++)
+                {
+                    screen[j+BottomPlank - 20 + row*10][1 + i + card*22] = ' ';
+                }
+            }
+        }
+        
+        print();
+        countDown--;
+        usleep(110000);
+    }
+    
+    for (int j = 0; j<10; j++)
+    {
+        for (int i = 0; i<22; i++)
+        {
+            screen[j+BottomPlank - 20 + row*10][i + 2 + card*22] = screen[j+BottomPlank - 20 + row*10][3 + i + card*22];
+        }
+    }
+    
+    for (int j = 0; j<10; j++)
+    {
+        screen[j+BottomPlank - 20 + row*10][23 + card*22] = ' ';
+    }
+    
+    int AttackerPos = horde.getAttackerPos();
+    int dmg = horde.getUnit(AttackerPos)->getAttack();
+    troops.getUnit(position)->damaged(dmg);
+    
+    if(horde.getAttacker()->getType() == ghoul || horde.getAttacker()->getType() == leaper)
+    {
+        ZombieBiteAninmation();
+        horde.getAttacker()->damage(-(dmg*25+horde.getAttacker()->getLvl())/100);
+    }
+    
+    horde.getAttacker()->usedTurn();
+    
+    clear();
+    drawAll();
+    drawUndead();
+    
+    print();
+}
+
+void GameMenu::whosTurn()
+{
+    drawAll();
+    if (horde.getHighestPriority() > troops.getHighestPriority())
+    {
+        if (troops.rollcall())
+        {
+            if (horde.getAttacker()->getBleed())
+            {
+                zombie* Attacker = horde.getAttacker();
+                x1 = horde.getAttackerPos();
+                ZombiePirsAnimation();
+                horde.getAttacker()->bleedOut();
+                drawUndead();
+                if (horde.getAttacker() != Attacker)
+                {
+                    whosTurn();
+                }
+            }
+            Zselector(horde.getAttackerPos());
+            side.clear();
+            showSide();
+            print();
+            usleep(600000);
+            if (horde.getAttacker())
+            {
+                if(!horde.getAttacker()->getStun())
+                {
+                    if(horde.getAttacker()->getType() == leaper)
+                    {
+                        HumanSlashedAnimation(humanToSlash_revers());
+                    }
+                    else if (horde.getAttacker()->getType() == basher)
+                    {
+                        x1 = horde.getAttackerPos();
+                        clear();
+                        drawUndead();
+                        drawAll();
+                        ZombieBuffAnimation();
+                        horde.getAttacker()->setAtk(-1);
+                        drawUndead();
+                        if (horde.getAttacker()->getAttack() <= 0)
+                        {
+                            horde.evolve(horde.getAttackerPos());
+                            drawUndead();
+                        }
+                        else
+                        {
+                            horde.getAttacker()->usedTurn();
+                        }
+                    }
+                    else
+                    {
+                        HumanSlashedAnimation(humanToSlash());
+                    }
+                    whosTurn();
+                }
+                else
+                {
+                    x1 = horde.getAttackerPos();
+                    clear();
+                    drawUndead();
+                    drawAll();
+                    ZombieStunnedAnimation();
+                    horde.getAttacker()->stunedOut();
+                    horde.getAttacker()->usedTurn();
+                    whosTurn();
+                }
+            }
+        }
+        else
+        {
+            loseScreen();
+            battle = false;
+            horde.deleteAll();
+            horde.resetWaves();
+            show();
+        }
+    }
+    else
+    {
+        if (troops.getAttackerPos() == -1 && horde.getAttackerPos() == -1)
+        {
+            resetTurns();
+            selector();
+        }
+        else
+        {
+            selector();
+        }
+    }
+}
+
+void GameMenu::infoScreen()
+{
+    mapResources();
+    showTime();
+    showSide();
+    print();
+    
+    int a = BottomPlank/2-1;
+    int b = SidePlank/2-1;
+    int c = BottomPlank/2+5;
+    int d = SidePlank/2+1;
+    
+    while (d < SidePlank/2 + 36)
+    {
+        for (int j = a; j < c+1; j++)
+        {
+            for (int i = b; i < d+1; i++)
+            {
+                
+                if (j == a || j == c)
+                {
+                    screen[j][i] = '_';
+                }
+                else if(i == b || i == d)
+                {
+                    screen[j][i] = '|';
+                }
+                else
+                {
+                    screen[j][i] = ' ';
+                }
+            }
+        }
+        screen[a][b] = ' ';
+        screen[a][d] = ' ';
+        screen[c][b] = '|';
+        screen[c][d] = '|';
+        a--;
+        b -= 3;
+        c++;
+        d += 3;
+        print();
+        usleep(70000);
+    }
+    
+    char endScreen[29][70]=
+    {
+        " ___________________________________________________________________ ",
+        "|                            Info                                   |",
+        "|                                                                   |",
+        "| Zombie's Farm Frenzy is a strategy farm frenzy based              |",
+        "| horror RPG. By horror I mean horable graffics, but nevertheless   |",
+        "| it gets fun sometimes.                                            |",
+        "|                                                                   |",
+        "| Controls are:                                                     |",
+        "|                                                                   |",
+        "| 'W' - Up                                                          |",
+        "| 'S' - Down                                                        |",
+        "| 'A' - Left                                                        |",
+        "| 'D' - Right                                                       |",
+        "| 'F' - Enter                                                       |",
+        "| 'E' - Exit/Cancel                                                 |",
+        "| 'I' - Info                                                        |",
+        "| 'L' - Sell an item                                                |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "| Enjoy the game and try not to get eaten by zombies                |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                 - Press any key to continue -                     |",
+        "|                                                                   |",
+        "|___________________________________________________________________|"
+        
+    };
+    
+    for (int j = b-2, y = 0; y<29; j++, y++)
+    {
+        for (int i = a+6, x = 0; x<69; i++, x++)
+        {
+            screen[j][i] = endScreen[y][x];
+        }
+    }
+    
+    print();
+    
+    while (!kbhit())
+    {
+    }
+    hide();
+    reveal();
+}
+
+void GameMenu::loseScreen()
+{
+    battle = false;
+    mapResources();
+    showTime();
+    showSide();
+    print();
+    
+    int a = BottomPlank/2-1;
+    int b = SidePlank/2-1;
+    int c = BottomPlank/2+5;
+    int d = SidePlank/2+1;
+    
+    while (d < SidePlank/2 + 36)
+    {
+        for (int j = a; j < c+1; j++)
+        {
+            for (int i = b; i < d+1; i++)
+            {
+                
+                if (j == a || j == c)
+                {
+                    screen[j][i] = '_';
+                }
+                else if(i == b || i == d)
+                {
+                    screen[j][i] = '|';
+                }
+                else
+                {
+                    screen[j][i] = ' ';
+                }
+            }
+        }
+        screen[a][b] = ' ';
+        screen[a][d] = ' ';
+        screen[c][b] = '|';
+        screen[c][d] = '|';
+        a--;
+        b -= 3;
+        c++;
+        d += 3;
+        print();
+        usleep(70000);
+    }
+    
+    char endScreen[29][70]=
+    {
+        " ___________________________________________________________________ ",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                         You've lost                               |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|    Sad enough                                                     |",
+        "|                                                                   |",
+        "|    May be next time you'll be luckier                             |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                                                                   |",
+        "|                 - Press any key to continue -                     |",
+        "|                                                                   |",
+        "|___________________________________________________________________|"
+        
+    };
+    
+    for (int j = b-2, y = 0; y<29; j++, y++)
+    {
+        for (int i = a+6, x = 0; x<69; i++, x++)
+        {
+            screen[j][i] = endScreen[y][x];
+        }
+    }
+    
+    Dial.AddQuote("You've lost!");
+    showDialog();
+    print();
+    
+    while (!kbhit())
+    {
+    }
+    clear();
+    reveal();
+    troops.massRevive();
+    side.setMenuOption(options::main);
+}
+
+void GameMenu::winScreen()
+{
+    battle = false;
+    mapResources();
+    showTime();
+    showSide();
+    print();
+    
+    int a = BottomPlank/2-1;
+    int b = SidePlank/2-1;
+    int c = BottomPlank/2+5;
+    int d = SidePlank/2+1;
+    
+    while (d < SidePlank/2 + 36)
+    {
+        for (int j = a; j < c+1; j++)
+        {
+            for (int i = b; i < d+1; i++)
+            {
+                
+                if (j == a || j == c)
+                {
+                    screen[j][i] = '_';
+                }
+                else if(i == b || i == d)
+                {
+                    screen[j][i] = '|';
+                }
+                else
+                {
+                    screen[j][i] = ' ';
+                }
+            }
+        }
+        screen[a][b] = ' ';
+        screen[a][d] = ' ';
+        screen[c][b] = '|';
+        screen[c][d] = '|';
+        a--;
+        b -= 3;
+        c++;
+        d += 3;
+        print();
+        usleep(70000);
+    }
+ 
+char endScreen[29][70]=
+    {
+    " ___________________________________________________________________ ",
+    "|                                                                   |",
+    "|                                                                   |",
+    "|                                                                   |",
+    "|                      Congradulations!                             |",
+    "|                         You won the battle!                       |",
+    "|                                                                   |",
+    "|                                                                   |",
+    "|                                                                   |",
+    "|                                                                   |",
+    "|         Reward:                                                   |",
+    "|                                                                   |",
+    "|         Money                                                     |",
+    "|         Exp                                                       |",
+    "|                                                                   |",
+    "|         Items Found:                                              |",
+    "|                                                                   |",
+    "|                                                                   |",
+    "|                                       _________                   |",
+    "|                                      /________/\\                  |",
+    "|                                     |         ||                  |",
+    "|                                     |_________|/                  |",
+    "|                                    /________ /|                   |",
+    "|                                    |        | |                   |",
+    "|                                    |________|/                    |",
+    "|                                                                   |",
+    "|                                                                   |",
+    "|                       - Press S to skip -                         |",
+    "|___________________________________________________________________|"
+    };
+    
+    int Money = horde.getMoney();
+    int equipTicket = 0;
+    
+    while (Money >= 50)
+    {
+        int random = rand()%100+1;
+        
+        if (random >= 50 - GlobalTime.getDay()*2)
+        {
+            equipTicket++;
+        }
+        
+        Money -= 50;
+    }
+    
+    Money = horde.getMoney();
+    
+    if (equipTicket)
+    {
+        while (equipTicket)
+        {
+            item* Aloc = loader.getRandomEquip();
+            
+                if (endScreen[21][10] == ' ')
+                {
+                    int j = 0;
+                    for (int i = 0; i<3; i++)
+                    {
+                        if (endScreen[17+j*2][10] != ' ')
+                        {
+                            j++;
+                        }
+                        else
+                        {
+                            i = 3;
+                        }
+                    };
+                    
+                    for (int i = 0; i<25; i++)
+                    {
+                        if (Aloc->getName(i))
+                        {
+                            endScreen[17 + j*2][10+i] = Aloc->getName(i);
+                        }
+                        else
+                        {
+                            i = 25;
+                        }
+                    }
+                }
+            items.addItem(Aloc);
+            equipTicket--;
+        }
+    }
+    else
+    {
+        char none[] = "None";
+        for (int i = 0; i<strlen(none); i++)
+        {
+            endScreen[17][10+i] = none[i];
+        }
+    }
+    
+    for (int j = b-2, y = 0; y<29; j++, y++)
+    {
+        for (int i = a+6, x = 0; x<69; i++, x++)
+        {
+            screen[j][i] = endScreen[y][x];
+        }
+    }
+    
+    int money = Money;
+    int Exp   = horde.getExp();
+    int exp   = Exp;
+    int MRate  = Money / 14;
+    int ERate  = Exp / 14;
+    bool done = false;
+    
+    if (MRate <= 2)
+    {
+        MRate = 3;
+    }
+    
+    if (ERate <= 2)
+    {
+        ERate = 3;
+    }
+    
+    int factor_1 = 1;
+    int factor_2 = 1;
+    int factor_3 = 1;
+    int factor_5 = 1;
+    int factor_6 = 1;
+    
+    const int x_Coin1 = 50;
+    const int x_Coin2 = 51;
+    const int x_Coin3 = 52;
+    const int x_Coin5 = 54;
+    const int x_Coin6 = 55;
+    
+    const int limit = 3;
+    
+    int y1 = 21;
+    int y2 = 22;
+    int y3 = 24;
+    int y5 = 22;
+    int y6 = 23;
+    //22
+    char ch1 = ' ';
+    char ch2 = ' ';
+    char ch3 = '_';
+    char ch5 = ' ';
+    char ch6 = ' ';
+    
+    while (!done)
+    {
+        Money -= MRate;
+        if (Money <= MRate)
+        {
+            Res.addMoney(Money);
+            horde.setMoney();
+            Money = 0;
+        }
+        else
+        {
+            Res.addMoney(MRate);
+        }
+        
+        Exp   -= ERate;
+        if (Exp <= ERate)
+        {
+            massExp(Exp);
+            horde.setExp();
+            Exp = 0;
+        }
+        else
+        {
+            massExp(ERate);
+        }
+        
+        if (factor_1 < limit)
+        {
+            screen[y1][x_Coin1] = ch1;
+            ch1 = screen[y1+1][x_Coin1];
+            screen[y1+1][x_Coin1] = 'o';
+            y1++;
+        }
+        if (y1 == 28)
+        {
+            screen[y1][x_Coin1] = ch1;
+            ch1 = ' ';
+            y1 = 23;
+            factor_1++;
+        }
+        
+        if (factor_2 < limit)
+        {
+            screen[y2][x_Coin2] = ch2;
+            ch2 = screen[y2+1][x_Coin2];
+            screen[y2+1][x_Coin2] = 'o';
+            y2++;
+        }
+        if (y2 == 28)
+        {
+            screen[y2][x_Coin2] = ch2;
+            ch2 = ' ';
+            y2 = 22;
+            factor_2++;
+        }
+        
+        if (factor_3 < limit)
+        {
+            screen[y3][x_Coin3] = ch3;
+            ch3 = screen[y3+1][x_Coin3];
+            screen[y3+1][x_Coin3] = 'o';
+            y3++;
+        }
+        
+        if (y3 == 28)
+        {
+            screen[y3][x_Coin3] = ch3;
+            ch3 = ' ';
+            y3 = 22;
+            factor_3++;
+        }
+        
+        if (factor_5 < limit)
+        {
+            screen[y5][x_Coin5] = ch5;
+            ch5 = screen[y5+1][x_Coin5];
+            screen[y5+1][x_Coin5] = 'o';
+            y5++;
+        }
+        if (y5 == 28)
+        {
+            screen[y5][x_Coin5] = ch5;
+            ch5 = ' ';
+            y5 = 21;
+            factor_5++;
+        }
+        
+        if (factor_6 < limit)
+        {
+            screen[y6][x_Coin6] = ch6;
+            ch6 = screen[y6+1][x_Coin6];
+            screen[y6+1][x_Coin6] = 'o';
+            y6++;
+        }
+        if (y6 == 28)
+        {
+            screen[y6][x_Coin6] = ch6;
+            ch6 = ' ';
+            y6 = 23;
+            factor_6++;
+        }
+        
+        money = Money;
+        exp = Exp;
+        for (int i = 0; i<LenOfNumbers(100000); i++)
+        {
+            screen[b+10][31-i] = ' ';
+        }
+        for (int i = 0; i<LenOfNumbers(Money); i++)
+        {
+            screen[b+10][31-i] = (char)((int)'0')+money%10;
+            money /= 10;
+        }
+        for (int i = 0; i<LenOfNumbers(100000); i++)
+        {
+            screen[b+11][31-i] = ' ';
+        }
+        for (int i = 0; i<LenOfNumbers(Exp); i++)
+        {
+            screen[b+11][31-i] = (char)((int)'0')+exp%10;
+            exp /= 10;
+        }
+        mapResources();
+        print();
+        
+        if (Money == 0 && Exp == 0)
+        {
+            done = true;
+            usleep(1000000);
+        }
+        else if(!kbhit())
+        {
+            usleep(300000);
+        }
+        else
+        {
+            int g = 0;
+            g = getchar();
+            
+            if (g == keys::S || g == keys::s)
+            {
+                done = true;
+            }
+            else
+            {
+                usleep(300000);
+            }
+        }
+    }
+    
+        Res.addMoney(Money);
+        Money = 0;
+        horde.setMoney();
+        
+        massExp(Exp);
+        horde.setExp();
+        Exp = 0;
+        mapResources();
+        troops.drawAll();
+        drawAll();
+        print();
+    
+    clear();
+    drawAll();
+}
+
+
+int  GameMenu::humanToSlash_revers() const
+{
+    if (troops.rollcall())
+    {
+        int row = 1;
+        int card = 0;
+        
+        if (!cardsInRow(row))
+        {
+            row--;
+        }
+        
+        srand(unsigned(time(NULL)));
+        card = rand()%4;
+        
+        while ((troops.getUnit(row, card)->IsAlive() == false) || (troops.getUnit(row, card)->getType() == untitled))
+        {
+            card++;
+            if (card == 4)
+            {
+                card = 0;
+            }
+        }
+        
+        int position = row*4+card;
+        
+        return position;
+    }
+    else
+    {
+        return - 1;
+    }
+}
+
+int GameMenu::humanToSlash() const
+{
+    if (troops.rollcall())
+    {
+        int row = 0;
+        int card = 0;
+        
+        if (!cardsInRow(row))
+        {
+            row++;
+        }
+        
+        srand(unsigned(time(NULL)));
+        card = rand()%4;
+        
+        while ((troops.getUnit(row, card)->IsAlive() == false) || (troops.getUnit(row, card)->getType() == untitled))
+        {
+            card++;
+            if (card == 4)
+            {
+                card = 0;
+            }
+        }
+        
+        int position = row*4+card;
+        
+        return position;
+    }
+    else
+    {
+        return - 1;
+    }
+}
+
+void GameMenu::slashedAnimation()
+{
+    int countDown = 6;
+    
+        for (int j = 0; j<10; j++)
+        {
+            for (int i = 0; i<11; i++)
+            {
+                screen[5+j][1 + i + x1*11] = screen[5+j][2 + i + x1*11];
+            }
+        }
+    countDown--;
+    print();
+    usleep(110000);
+    while (countDown)
+    {
+        if (countDown%2 == 0)
+        {
+            for (int j = 0; j<10; j++)
+            {
+                for (int i = 0; i<10; i++)
+                {
+                    screen[5+j][i + 1  + x1*11] = screen[5+j][3 + i + x1*11];
+                }
+            }
+            
+            for (int j = 0; j<10; j++)
+            {
+                for (int i = 0; i<2; i++)
+                {
+                    screen[5+j][11 + i + x1*11] = ' ';
+                }
+            }
+        }
+        
+        else if(countDown%2 != 0)
+        {
+            for (int j = 0; j<10; j++)
+            {
+                for (int i = 10; i>0; i--)
+                {
+                    screen[5+j][2 + i + x1*11] = screen[5+j][i + x1*11];
+                }
+            }
+            for (int j = 0; j<10; j++)
+            {
+                for (int i = 0; i<2; i++)
+                {
+                    screen[5+j][1 + i + x1*11] = ' ';
+                }
+            }
+        }
+        print();
+        countDown--;
+        usleep(110000);
+    }
+    
+    for (int j = 0; j<10; j++)
+    {
+        for (int i = 0; i<11; i++)
+        {
+            screen[5+j][1 + i + x1*11] = screen[5+j][2 + i + x1*11];
+        }
+    }
+    
+    for (int j = 0; j<10; j++)
+    {
+        screen[5+j][12 + x1*11] = ' ';
+    }
+    
+    horde.getUnit(x1)->damage(troops.getAttacker()->getDamage());
+    drawUndead();
+}
+
+void GameMenu::addUnit()
+{
+    if (troops.rollcall() == troops.getCount())
+    {
+        Dial.AddQuote("Your squad is full");
+    }
+    else
+    {
+        troops.addSolder();
+    }
+}
+
+int GameMenu::cardsInRow(const int row) const
+{
+    int l = 0;
+    for (int i = 0; i<4; i++)
+    {
+        if((troops.getUnit(row, i)->getType() != untitled) && (troops.getUnit(row, i)->IsAlive()))
+        {
+            l++;
+        }
+    }
+    return l;
+}
+
+void GameMenu::fight()
+{
+    if (troops.rollcall() == 0)
+    {
+        Dial.AddQuote("Your out of units! Better get some before next attack");
+    }
+    hide();
+    drawAll();
+    resetVariables();
+    side.setMenuOption(options::battle);
+}
+
+void GameMenu::choosing2lvl(const int x2)
+{
+        for (int j = 0;j<12; j++)
+        {
+            for (int i = 0; i<23; i++)
+            {
+                screen[14+j][10 + i + x2*24] = '*';
+            }
+        }
+}
+
+void GameMenu::drawUpgrade()
+{
+        for (int card = 0; card<3; card++)
+        {
+            for (int j = 0;j<10; j++)
+            {
+                for (int i = 0; i<21; i++)
+                {
+                    screen[15+j][11 + i + card*24] = upgrade[card]->getPic(j, i);
+                }
+            }
+        }
+}
+
+void GameMenu::drawAll()
+{
+    for (int row = 0; row<2; row++)
+    {
+        for (int card = 0; card<4; card++)
+        {
+            for (int j = 0;j<10; j++)
+            {
+                for (int i = 0; i<21; i++)
+                {
+                    if (troops.getUnit(row, card)->getType() != title::untitled)
+                    {
+                        screen[j+BottomPlank - 20 + row*10][2 + i + card*22] = troops.getUnit(row, card)->getPic(j, i);
+                    }
+                    else
+                    {
+                        screen[j+BottomPlank - 20 + row*10][2 + i + card*22] = ' ';
+                    }
+                }
+            }
+        }
+    }
+    showWaves();
+}
+
+void GameMenu::deleteWaves()
+{
+    int count = horde.getCount();
+    
+    horde.deleteWave();
+    
+    if (count <= 8)
+    {
+        Dial.AddQuote("Congradulations! You've won!");
+        drawAll();
+        horde.resetWaves();
+        side.clear();
+        side.setOption(0);
+        side.option_battle();
+        side.setMenuOption(options::battle);
+        winScreen();
+    }
+    else
+    {
+        clear();
+        drawUndead();
+    }
+}
+
+bool GameMenu::checkWasted() const
+{
+    bool AllWasted = true;
+    
+    zombie * aloc = horde.getHead();
+    int count = horde.getCount();
+    {
+        if(count>8)
+        {
+            count = 8;
+        }
+    }
+    
+    for (int i = 0; i < count; i++)
+    {
+        if(aloc->getType() != zombies::wasted)
+        {
+            AllWasted = false;
+        }
+        aloc = aloc->getNext();
+    }
+    
+    return AllWasted;
+}
+
+void GameMenu::drawInventory()
+{
+    clear();
+    
+    char emptyPic[5][14] =
+    {
+        "             ",
+        "  ***********",
+        "  ***empty***",
+        "  ***********",
+        "             "
+    };
+    
+    int count = 0;
+    
+    for (int row = 0; row < 3; row++)
+    {
+        for (int card = 0; card < 6; card++)
+        {
+            for (int j = 0; j<5; j++)
+            {
+                for (int i = 0; i<13; i++)
+                {
+                    if ((count+y2*18) < items.getCount())
+                    {
+                        int Position = row*6+card;
+                        screen[j+BottomPlank - 15 + row*5][4 + i + card*14] = items.getItem(Position + y2*18)->getPic(j, i);
+                    }
+                    else
+                    {
+                        if(emptyPic[j][i] == '*')
+                        {
+                            screen[j+BottomPlank - 15 + row*5][3 + i + card*14] = char(6);
+                        }
+                        else
+                        {
+                            screen[j+BottomPlank - 15 + row*5][3 + i + card*14] = emptyPic[j][i];
+                        }
+                    }
+                }
+            }
+            count++;
+        }
+    }
+    
+    if (troops.getUnit(y1,x1)->getHelmet())
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                screen[j + 4][i + 26] = troops.getUnit(y1,x1)->getHelmet()->getPic(j, i);
+            }
+        }
+    }
+    else
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                if(emptyPic[j][i] == '*')
+                {
+                    screen[j + 4][i + 25] = char(6);
+                }
+                else
+                {
+                    screen[j + 4][i + 25] = emptyPic[j][i];
+                }
+            }
+        }
+    }
+    
+    if (troops.getUnit(y1,x1)->getChest())
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                screen[j + 9][i + 26] = troops.getUnit(y1,x1)->getChest()->getPic(j, i);
+            }
+        }
+    }
+    else
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                if(emptyPic[j][i] == '*')
+                {
+                    screen[j + 9][i + 25] = char(6);
+                }
+                else
+                {
+                    screen[j + 9][i + 25] = emptyPic[j][i];
+                }
+            }
+        }
+    }
+    
+    if (troops.getUnit(y1,x1)->getGloves())
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                screen[j + 14][i + 26] = troops.getUnit(y1,x1)->getGloves()->getPic(j, i);
+            }
+        }
+    }
+    else
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                if(emptyPic[j][i] == '*')
+                {
+                    screen[j + 14][i + 25] = char(6);
+                }
+                else
+                {
+                    screen[j + 14][i + 25] = emptyPic[j][i];
+                }
+            }
+        }
+    }
+    
+    if (troops.getUnit(y1,x1)->getBoots())
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                screen[j + 14][i + 14] = troops.getUnit(y1,x1)->getBoots()->getPic(j, i);
+            }
+        }
+    }
+    else
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                if(emptyPic[j][i] == '*')
+                {
+                    screen[j + 14][i + 13] = char(6);
+                }
+                else
+                {
+                    screen[j + 14][i + 13] = emptyPic[j][i];
+                }
+            }
+        }
+    }
+    
+    if (troops.getUnit(y1,x1)->getWeapon())
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                screen[j + 14][i + 2] = troops.getUnit(y1,x1)->getWeapon()->getPic(j, i);
+            }
+        }
+    }
+    else
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                if(emptyPic[j][i] == '*')
+                {
+                    screen[j + 14][i + 1] = char(6);
+                }
+                else
+                {
+                    screen[j + 14][i + 1] = emptyPic[j][i];
+                }
+            }
+        }
+    }
+    
+    for (int j = 0;j<10; j++)
+    {
+        for (int i = 0; i<21; i++)
+        {
+            screen[j + 4][i + 2] = troops.getUnit(y1,x1)->getPic(j, i);
+        }
+    }
+    drawDescription();
+    drawStats();
+    print();
+}
+
+void GameMenu::drawStats()
+{
+    unit * UNIT = troops.getUnit(y1, x1);
+    item * ITEM = nullptr;
+    char  TITLE[20];
+    
+    if (x2 == 0)
+    {
+        ITEM = UNIT->getHelmet();
+    }
+    else if (x2 == 1)
+    {
+        ITEM = UNIT->getChest();
+    }
+    else if (x2 == 2)
+    {
+        ITEM = UNIT->getWeapon();
+    }
+    else if (x2 == 3)
+    {
+        ITEM = UNIT->getBoots();
+    }
+    else if (x2 == 4)
+    {
+        ITEM = UNIT->getGloves();
+    }
+    else
+    {
+        ITEM = items.getItem(x2 - 5 + y2*18);
+    }
+    if (ITEM)
+    {
+        for (int i = 0; i<20; i++)
+        {
+            TITLE[i] = ITEM->getTitle(i);
+        }
+    }
+    
+    char statScreen[12][20] = {};
+    
+    strcpy(statScreen[0], "Stats:");
+    
+    int stat = 0;
+    
+    strcpy(statScreen[2],  "Hp     ");
+    strcpy(statScreen[3],  "Dmg    ");
+    strcpy(statScreen[4],  "Def    ");
+    strcpy(statScreen[5],  "Prior  ");
+    strcpy(statScreen[6],  "Turns  ");
+    strcpy(statScreen[8],  "Splash ");
+    strcpy(statScreen[9],  "Crit   ");
+    strcpy(statScreen[10], "Stun   ");
+    strcpy(statScreen[11], "Pirs   ");
+    
+    stat = UNIT->getMaxHp();
+    int COUNT = LenOfNumbers(stat);
+    for (int i = 0; i<COUNT; i++)
+    {
+        statScreen[2][12-i] = (char)((int)'0') + stat%10;
+        stat /= 10;
+    }
+    
+    stat = UNIT->getDamage();
+    COUNT = LenOfNumbers(stat);
+    for (int i = 0; i<COUNT; i++)
+    {
+        statScreen[3][12-i] = (char)((int)'0') + stat%10;
+        stat /= 10;
+    }
+    
+    stat = UNIT->getDef();
+    COUNT = LenOfNumbers(stat);
+    for (int i = 0; i<COUNT; i++)
+    {
+        statScreen[4][12-i] = (char)((int)'0') + stat%10;
+        stat /= 10;
+    }
+    
+    stat = UNIT->getPriority();
+    COUNT = LenOfNumbers(stat);
+    for (int i = 0; i<COUNT; i++)
+    {
+        statScreen[5][12-i] = (char)((int)'0') + stat%10;
+        stat /= 10;
+    }
+    
+    stat = UNIT->getMaxTurns();
+    COUNT = LenOfNumbers(stat);
+    for (int i = 0; i<COUNT; i++)
+    {
+        statScreen[6][12-i] = (char)((int)'0') + stat%10;
+        stat /= 10;
+    }
+    
+    
+    stat = UNIT->getSplash();
+    COUNT = LenOfNumbers(stat);
+    for (int i = 0; i<COUNT; i++)
+    {
+        statScreen[8][12-i] = (char)((int)'0') + stat%10;
+        stat /= 10;
+    }
+    
+    stat = UNIT->getCrit();
+    COUNT = LenOfNumbers(stat);
+    for (int i = 0; i<COUNT; i++)
+    {
+        statScreen[9][12-i] = (char)((int)'0') + stat%10;
+        stat /= 10;
+    }
+    
+    stat = UNIT->getStun();
+    COUNT = LenOfNumbers(stat);
+    for (int i = 0; i<COUNT; i++)
+    {
+        statScreen[10][12-i] = (char)((int)'0') + stat%10;
+        stat /= 10;
+    }
+    
+    stat = UNIT->getPirs();
+    COUNT = LenOfNumbers(stat);
+    for (int i = 0; i<COUNT; i++)
+    {
+        statScreen[11][12-i] = (char)((int)'0') + stat%10;
+        stat /= 10;
+    }
+    
+    if (ITEM)
+    {
+        stat = ITEM->getHp();
+        if (x2<5)
+        {
+            stat *= -1;
+        }
+        else
+        {
+            if (equals(TITLE, "Weapon"))
+            {
+                if (UNIT->getWeapon())
+                {
+                    stat -= UNIT->getWeapon()->getHp();
+                }
+            }
+            else if (equals(TITLE, "Helmet"))
+            {
+                if (UNIT->getHelmet())
+                {
+                    stat -= UNIT->getHelmet()->getHp();
+                }
+            }
+            else if (equals(TITLE, "Chest"))
+            {
+                if (UNIT->getChest())
+                {
+                    stat -= UNIT->getChest()->getHp();
+                }
+            }
+            else if (equals(TITLE, "Gloves"))
+            {
+                if (UNIT->getGloves())
+                {
+                    stat -= UNIT->getGloves()->getHp();
+                }
+            }
+            else if (equals(TITLE, "Boots"))
+            {
+                if (UNIT->getBoots())
+                {
+                    stat -= UNIT->getBoots()->getHp();
+                }
+            }
+        }
+        if (stat)
+        {
+            COUNT = LenOfNumbers(stat);
+            if(stat>0)
+            {
+                statScreen[2][14] = '+';
+            }
+            else
+            {
+                statScreen[2][14] = '-';
+                stat *= -1;
+            }
+            for (int i = COUNT; i>0; i--)
+            {
+                statScreen[2][14+i] = (char)((int)'0') + stat%10;
+                stat /= 10;
+            }
+        }
+        
+        stat = ITEM->getDmg();
+        if (x2<5)
+        {
+            stat *= -1;
+        }
+        else
+        {
+            if (equals(TITLE, "Weapon"))
+            {
+                if (UNIT->getWeapon())
+                {
+                    stat -= UNIT->getWeapon()->getDmg();
+                }
+            }
+            else if (equals(TITLE, "Helmet"))
+            {
+                if (UNIT->getHelmet())
+                {
+                    stat -= UNIT->getHelmet()->getDmg();
+                }
+            }
+            else if (equals(TITLE, "Chest"))
+            {
+                if (UNIT->getChest())
+                {
+                    stat -= UNIT->getChest()->getDmg();
+                }
+            }
+            else if (equals(TITLE, "Gloves"))
+            {
+                if (UNIT->getGloves())
+                {
+                    stat -= UNIT->getGloves()->getDmg();
+                }
+            }
+            else if (equals(TITLE, "Boots"))
+            {
+                if (UNIT->getBoots())
+                {
+                    stat -= UNIT->getBoots()->getDmg();
+                }
+            }
+        }
+        if (stat)
+        {
+            COUNT = LenOfNumbers(stat);
+            if(stat>0)
+            {
+                statScreen[3][14] = '+';
+            }
+            else
+            {
+                statScreen[3][14] = '-';
+                stat *= -1;
+            }
+            for (int i = COUNT; i>0; i--)
+            {
+                statScreen[3][14+i] = (char)((int)'0') + stat%10;
+                stat /= 10;
+            }
+        }
+        
+        stat = ITEM->getDef();
+        if (x2<5)
+        {
+            stat *= -1;
+        }
+        else
+        {
+            if (equals(TITLE, "Weapon"))
+            {
+                if (UNIT->getWeapon())
+                {
+                    stat -= UNIT->getWeapon()->getDef();
+                }
+            }
+            else if (equals(TITLE, "Helmet"))
+            {
+                if (UNIT->getHelmet())
+                {
+                    stat -= UNIT->getHelmet()->getDef();
+                }
+            }
+            else if (equals(TITLE, "Chest"))
+            {
+                if (UNIT->getChest())
+                {
+                    stat -= UNIT->getChest()->getDef();
+                }
+            }
+            else if (equals(TITLE, "Gloves"))
+            {
+                if (UNIT->getGloves())
+                {
+                    stat -= UNIT->getGloves()->getDef();
+                }
+            }
+            else if (equals(TITLE, "Boots"))
+            {
+                if (UNIT->getBoots())
+                {
+                    stat -= UNIT->getBoots()->getDef();
+                }
+            }
+        }
+        if (stat)
+        {
+            COUNT = LenOfNumbers(stat);
+            if(stat>0)
+            {
+                statScreen[4][14] = '+';
+            }
+            else
+            {
+                statScreen[4][14] = '-';
+                stat *= -1;
+            }
+            for (int i = COUNT; i>0; i--)
+            {
+                statScreen[4][14+i] = (char)((int)'0') + stat%10;
+                stat /= 10;
+            }
+        }
+        
+        stat = ITEM->getPriority();
+        if (x2<5)
+        {
+            stat *= -1;
+        }
+        else
+        {
+            if (equals(TITLE, "Helmet"))
+            {
+                if (UNIT->getHelmet())
+                {
+                    stat -= UNIT->getHelmet()->getPriority();
+                }
+            }
+        }
+        if (stat)
+        {
+            COUNT = LenOfNumbers(stat);
+            if(stat>0)
+            {
+                statScreen[5][14] = '+';
+            }
+            else
+            {
+                statScreen[5][14] = '-';
+                stat *= -1;
+            }
+            for (int i = COUNT; i>0; i--)
+            {
+                statScreen[5][14+i] = (char)((int)'0') + stat%10;
+                stat /= 10;
+            }
+        }
+        
+        stat = ITEM->getTurns();
+        if (x2<5)
+        {
+            stat *= -1;
+        }
+        else
+        {
+            if (equals(TITLE, "Weapon"))
+            {
+                if (UNIT->getWeapon())
+                {
+                    stat -= UNIT->getWeapon()->getTurns();
+                }
+            }
+        }
+        if (stat)
+        {
+            COUNT = LenOfNumbers(stat);
+            if(stat>0)
+            {
+                statScreen[6][14] = '+';
+            }
+            else
+            {
+                statScreen[6][14] = '-';
+                stat *= -1;
+            }
+            for (int i = COUNT; i>0; i--)
+            {
+                statScreen[6][14+i] = (char)((int)'0') + stat%10;
+                stat /= 10;
+            }
+        }
+        
+        stat = ITEM->getSplash();
+        if (x2<5)
+        {
+            stat *= -1;
+        }
+        else
+        {
+            if (equals(TITLE, "Weapon"))
+            {
+                if (UNIT->getWeapon())
+                {
+                    stat -= UNIT->getWeapon()->getSplash();
+                }
+            }
+        }
+        if (stat)
+        {
+            COUNT = LenOfNumbers(stat);
+            if(stat>0)
+            {
+                statScreen[8][14] = '+';
+            }
+            else
+            {
+                statScreen[8][14] = '-';
+                stat *= -1;
+            }
+            for (int i = COUNT; i>0; i--)
+            {
+                statScreen[8][14+i] = (char)((int)'0') + stat%10;
+                stat /= 10;
+            }
+            statScreen[8][15+COUNT] = '%';
+        }
+        
+        stat = ITEM->getCrit();
+        if (x2<5)
+        {
+            stat *= -1;
+        }
+        else
+        {
+            if (equals(TITLE, "Weapon"))
+            {
+                if (UNIT->getWeapon())
+                {
+                    stat -= UNIT->getWeapon()->getCrit();
+                }
+            }
+        }
+        if (stat)
+        {
+            COUNT = LenOfNumbers(stat);
+            if(stat>0)
+            {
+                statScreen[9][14] = '+';
+            }
+            else
+            {
+                statScreen[9][14] = '-';
+                stat *= -1;
+            }
+            for (int i = COUNT; i>0; i--)
+            {
+                statScreen[9][14+i] = (char)((int)'0') + stat%10;
+                stat /= 10;
+            }
+            statScreen[9][15+COUNT] = '%';
+        }
+        
+        stat = ITEM->getStun();
+        if (x2<5)
+        {
+            stat *= -1;
+        }
+        else
+        {
+            if (equals(TITLE, "Weapon"))
+            {
+                if (UNIT->getWeapon())
+                {
+                    stat -= UNIT->getWeapon()->getStun();
+                }
+            }
+        }
+        if (stat)
+        {
+            COUNT = LenOfNumbers(stat);
+            if(stat>0)
+            {
+                statScreen[10][14] = '+';
+            }
+            else
+            {
+                statScreen[10][14] = '-';
+                stat *= -1;
+            }
+            for (int i = COUNT; i>0; i--)
+            {
+                statScreen[10][14+i] = (char)((int)'0') + stat%10;
+                stat /= 10;
+            }
+            statScreen[10][15+COUNT] = '%';
+        }
+        
+        stat = ITEM->getPirs();
+        if (x2<5)
+        {
+            stat *= -1;
+        }
+        else
+        {
+            if (equals(TITLE, "Weapon"))
+            {
+                if (UNIT->getWeapon())
+                {
+                    stat -= UNIT->getWeapon()->getPirs();
+                }
+            }
+        }
+        if (stat)
+        {
+            COUNT = LenOfNumbers(stat);
+            if(stat>0)
+            {
+                statScreen[11][14] = '+';
+            }
+            else
+            {
+                statScreen[11][14] = '-';
+                stat *= -1;
+            }
+            for (int i = COUNT; i>0; i--)
+            {
+                statScreen[11][14+i] = (char)((int)'0') + stat%10;
+                stat /= 10;
+            }
+        }
+    }
+    
+    for (int j = 0; j<12; j++)
+    {
+        for (int i = 0; i<20; i++)
+        {
+            if (statScreen[j][i] != '\0')
+            {
+                screen[j+5][i+40] = statScreen[j][i];
+            }
+        }
+    }
+    
+}
+
+void GameMenu::ZombieCritAnimation()
+{
+    int timer = 2;
+    int count = 5;
+    char buff[7][9] ={};
+    
+    while (count)
+    {
+        while (timer)
+        {
+            switch (timer)
+            {
+                case 2:
+                {
+                    strcpy_s(buff[0], 9, "   |    \0");
+                    strcpy_s(buff[1], 9, " $   /  \0");
+                    strcpy_s(buff[2], 9, "        \0");
+                    strcpy_s(buff[3], 9, "_     _ \0");
+                    strcpy_s(buff[4], 9, "        \0");
+                    strcpy_s(buff[5], 9, " /   $  \0");
+                    strcpy_s(buff[6], 9, "   |    \0");
+                    
+                    break;
+                }
+                case 1:
+                {
+                    strcpy_s(buff[0], 9, "        \0");
+                    strcpy_s(buff[1], 9, "        \0");
+                    strcpy_s(buff[2], 9, "        \0");
+                    strcpy_s(buff[3], 9, " _$|/_  \0");
+                    strcpy_s(buff[4], 9, "  /|$   \0");
+                    strcpy_s(buff[5], 9, "        \0");
+                    strcpy_s(buff[6], 9, "        \0");
+                    
+                    break;
+                }
+            }
+            
+            for (int j = 0; j<7; j++)
+            {
+                for (int i = 0; i<8; i++)
+                {
+                    if (buff[j][i] == '$')
+                    {
+                        CharOut('\\', j+7, i + 3  + x1*11);
+                    }
+                    else
+                    {
+                        CharOut(buff[j][i], j+7, i + 3  + x1*11);
+                    }
+                }
+            }
+            timer--;
+            usleep(100000);
+            print();
+        }
+        count--;
+        timer = 2;
+    }
+}
+
+void GameMenu::ZombieStunnedAnimation()
+{
+    int timer = 8;
+    int count = 2;
+    char buff[4][9] ={};
+    
+    while (count)
+    {
+        while (timer)
+        {
+            switch (timer)
+            {
+                case 8:
+                {
+                    strcpy_s(buff[0], 9, "  ____  \0");
+                    strcpy_s(buff[1], 9, " |  __| \0");
+                    strcpy_s(buff[2], 9, " |____  \0");
+                    strcpy_s(buff[3], 9, "        \0");
+                    
+                    break;
+                }
+                case 7:
+                {
+                    strcpy_s(buff[0], 9, "   /$   \0");
+                    strcpy_s(buff[1], 9, "  /  $  \0");
+                    strcpy_s(buff[2], 9, "  $ $/  \0");
+                    strcpy_s(buff[3], 9, "   $    \0");
+
+                    break;
+                }
+                case 6:
+                {
+                    strcpy_s(buff[0], 9, "  ____  \0");
+                    strcpy_s(buff[1], 9, " |    | \0");
+                    strcpy_s(buff[2], 9, " | |__| \0");
+                    strcpy_s(buff[3], 9, "        \0");
+                    
+                    break;
+                }
+                case 5:
+                {
+                    strcpy_s(buff[0], 9, "  /$    \0");
+                    strcpy_s(buff[1], 9, " /  $   \0");
+                    strcpy_s(buff[2], 9, "  / /   \0");
+                    strcpy_s(buff[3], 9, "  $/    \0");
+                    
+                    break;
+                }
+                case 4:
+                {
+                    strcpy_s(buff[0], 9, "  ____  \0");
+                    strcpy_s(buff[1], 9, "  __  | \0");
+                    strcpy_s(buff[2], 9, " |____| \0");
+                    strcpy_s(buff[3], 9, "        \0");
+                    
+                    break;
+                }
+                case 3:
+                {
+                    
+                    strcpy_s(buff[0], 9, "    $   \0");
+                    strcpy_s(buff[1], 9, "  /$ $  \0");
+                    strcpy_s(buff[2], 9, "  $  /  \0");
+                    strcpy_s(buff[3], 9, "   $/   \0");
+                    
+                    break;
+                }
+                case 2:
+                {
+                    strcpy_s(buff[0], 9, "  _     \0");
+                    strcpy_s(buff[1], 9, " | | |  \0");
+                    strcpy_s(buff[2], 9, " |___|  \0");
+                    strcpy_s(buff[3], 9, "        \0");
+                    
+                    break;
+                }
+                case 1:
+                {
+                    strcpy_s(buff[0], 9, "  /$    \0");
+                    strcpy_s(buff[1], 9, " / /    \0");
+                    strcpy_s(buff[2], 9, " $  /   \0");
+                    strcpy_s(buff[3], 9, "  $/    \0");
+                    
+                    break;
+                }
+            }
+            
+            for (int j = 0; j<4; j++)
+            {
+                for (int i = 0; i<8; i++)
+                {
+                    if (buff[j][i] == '$')
+                    {
+                        CharOut('\\', j+7, i + 3  + x1*11);
+                    }
+                    else
+                    {
+                        CharOut(buff[j][i], j+7, i + 3  + x1*11);
+                    }
+                }
+            }
+            timer--;
+            usleep(100000);
+            print();
+        }
+        count--;
+        timer = 8;
+    }
+    drawUndead();
+}
+
+void GameMenu::drawDescription()
+{
+    if ((x2 >= 5) && (items.getCount() > ((x2 - 5)+y2*18)))
+    {
+        for (int j = 0; j< 14; j++)
+        {
+            for (int i = 0; i < 28; i++)
+            {
+                screen[5+j][SidePlank - 28 + i] = items.getItem((x2 - 5)+y2*18)->getDescript(j, i);
+            }
+        }
+    }
+    else if (x2 == 0)
+    {
+        if (troops.getUnit(y1, x1)->getHelmet())
+        {
+            for (int j = 0; j< 14; j++)
+            {
+                for (int i = 0; i < 28; i++)
+                {
+                    screen[5+j][SidePlank - 28 + i] = troops.getUnit(y1, x1)->getHelmet()->getDescript(j, i);
+                }
+            }
+        }
+    }
+    else if (x2 == 1)
+    {
+        if (troops.getUnit(y1, x1)->getChest())
+        {
+            for (int j = 0; j< 14; j++)
+            {
+                for (int i = 0; i < 28; i++)
+                {
+                    screen[5+j][SidePlank - 28 + i] = troops.getUnit(y1, x1)->getChest()->getDescript(j, i);
+                }
+            }
+        }
+    }
+    else if (x2 == 2)
+    {
+        if (troops.getUnit(y1, x1)->getWeapon())
+        {
+            for (int j = 0; j< 14; j++)
+            {
+                for (int i = 0; i < 28; i++)
+                {
+                    screen[5+j][SidePlank - 28 + i] = troops.getUnit(y1, x1)->getWeapon()->getDescript(j, i);
+                }
+            }
+        }
+    }
+    else if (x2 == 3)
+    {
+        if (troops.getUnit(y1, x1)->getBoots())
+        {
+            for (int j = 0; j< 14; j++)
+            {
+                for (int i = 0; i < 28; i++)
+                {
+                    screen[5+j][SidePlank - 28 + i] = troops.getUnit(y1, x1)->getBoots()->getDescript(j, i);
+                }
+            }
+        }
+    }
+    else if (x2 == 4)
+    {
+        if (troops.getUnit(y1, x1)->getGloves())
+        {
+            for (int j = 0; j< 14; j++)
+            {
+                for (int i = 0; i < 28; i++)
+                {
+                    screen[5+j][SidePlank - 28 + i] = troops.getUnit(y1, x1)->getGloves()->getDescript(j, i);
+                }
+            }
+        }
+    }
+}
+
+void GameMenu::upgradeHouse()
+{
+    possession.upgradeHomeSize();
+}
+
+void GameMenu::functional()
+{
+    while(!kbhit())
+    {
+        if (possession.getBarracks()&&GlobalTime.getMin()%8 == 0 && GlobalTime.getSec() == 0)
+        {
+            if (!battle)
+            {
+                massHeal(8);
+                if (possession.getBarracks())
+                {
+                    massExp(1);
+                }
+            }
+        }
+        if (side.getMenuOption() == options::battle)
+        {
+            drawAll();
+        }
+        if (GlobalTime.getSec()%30 == 0)
+        {
+            Animation.show();
+        }
+        showDialog();
+        GlobalTime.fly();
+        showTime();
+        showSide();
+        mapResources();
+        progress.showProgress();
+        print();
+        usleep(150000);
+    }
+}
+
+void GameMenu::manipulator_Capture()
+{
+    int g = '0';
+    g = getchar();
+    if(g == keys::W||g == keys::w)
+    {
+        if(y2>BottomPlank/2 - (MyField.getSize() - 1))
+        {
+            y2--;
+        }
+    }
+    
+    if(g == keys::S||g == keys::s)
+    {
+        if(y2<BottomPlank/2 + (MyField.getSize() - 1))
+        {
+            y2++;
+        }
+    }
+    
+    if(g == keys::A||g == keys::a)
+    {
+        if(x2>SidePlank/2 - (MyField.getSize() - 1))
+        {
+            x2--;
+        }
+    }
+    
+    if(g == keys::D||g == keys::d)
+    {
+        if(x2<SidePlank/2 + (MyField.getSize() - 1))
+        {
+            x2++;
+        }
+    }
+    MyField.showField();
+    plantSelector();
+    
+    if(g == keys::E||g == keys::e)
+    {
+        MyField.showField();
+        CharOut('*', y1, x1);
+        side.setMenuOption(options::plantSelectorStart);
+    }
+    
+    if(g == keys::F||g == keys::f)
+    {
+        if (!checkSpase())
+        {
+            MyField.showField();
+            Dial.AddQuote("You are out of space boddy");
+            side.setMenuOption(planting);
+        }
+        else if(checkSpase()*(plant+1)>Res.getSeeds())
+        {
+            Dial.AddQuote("Sorry but you are out of seeds");
+        }
+        else
+        {
+        Res.addSeeds(-checkSpase()*(plant + 1));
+        mapResources();
+        side.clear();
+        Animation.startPlanting(x1, x2, y1, y2, plant, farmers.checkForFreeFarmer());
+        print();
+        side.setMenuOption(options::main);
+        }
+        }
+}
+
+int GameMenu::checkSpase()
+{
+    int space = 0;
+    for (int j = BottomPlank/2 - MyField.getSize()+1, h = 0; j<BottomPlank/2 + MyField.getSize(); j++, h++)
+    {
+        for (int i = SidePlank/2 - MyField.getSize()+1, l = 0; i<SidePlank/2 + MyField.getSize(); i++, l++)
+        {
+            if (MyField.checkForPlace(h, l) && screen[j][i] == '*')
+            {
+                space++;
+            }
+        }
+    }
+    return space;
+}
+
+void GameMenu::plantSelector()
+{
+    int l1 = x1;
+    int l2 = x2;
+    int h1 = y1;
+    int h2 = y2;
+    
+    if (l1>l2)
+    {
+        l1 = x2;
+        l2 = x1;
+    }
+    if (h1>h2)
+    {
+        h1 = y2;
+        h2 = y1;
+    }
+    
+    for (int j = h1; j<h2+1; j++)
+    {
+        for (int i = l1; i<l2+1; i++)
+        {
+            CharOut('*', j, i);
+        }
+    }
+    
+}
+
+void GameMenu::manipulator_Select()
+{
+    MyField.showField();
+    print();
+    int g = '0';
+    g = getchar();
+    
+    if(g == keys::W||g == keys::w)
+    {
+       if(y1>BottomPlank/2 - (MyField.getSize() - 1))
+       {
+           --y1;
+       }
+       CharOut('*', y1, x1);
+    }
+    
+    if(g == keys::S||g == keys::s)
+    {
+        if(y1<BottomPlank/2 + (MyField.getSize() - 1))
+        {
+            ++y1;
+        }
+        CharOut('*', y1, x1);
+    }
+    
+    if(g == keys::A||g == keys::a)
+    {
+        if(x1>SidePlank/2 - (MyField.getSize() - 1))
+        {
+            --x1;
+        }
+         CharOut('*', y1, x1);
+    }
+    
+    if(g == keys::D||g == keys::d)
+    {
+        if(x1<SidePlank/2 + (MyField.getSize() - 1))
+        {
+            ++x1;
+        }
+        CharOut('*', y1, x1);
+    }
+    
+    if(g == keys::F||g == keys::f)
+    {
+        x2 = x1;
+        y2 = y1;
+        plantSelector();
+        side.setMenuOption(options::plantSelectorEnd);
+    }
+    
+    if(g == keys::E||g == keys::e)
+    {
+        MyField.showField();
+        side.setMenuOption(options::planting);
+    }
+}
+
+
+void GameMenu::manipulator_Main()
+{
+    int g;
+    g = getchar();
+    
+    if(g==keys::w || g==keys::W || g==keys::S || g==keys::s)
+    {
+        side.slider(g);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == options::grow)
+    {
+        if(Animation.getDone() != chill)
+        {
+            Dial.AddQuote("You are already working on the field");
+        }
+        else
+        {
+            side.setMenuOption(options::planting);
+        }
+    }
+    if((g == keys::f||g == keys::F) && side.getOption() == options::construct)
+    {
+        side.setMenuOption(options::building);
+    }
+    if((g == keys::f||g == keys::F) && side.getOption() == options::activity)
+    {
+        side.setMenuOption(options::working);    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == options::units)
+    {
+            fight();
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == options::save)
+    {
+        save();
+        Dial.AddQuote("The game is saved");
+        showDialog();
+    }
+    
+    if(((g == keys::f||g == keys::F) && side.getOption() == 5)||( g == keys::e||g == keys::E))
+    {
+        Dial.AddQuote("Sure you want to quit?");
+        side.setMenuOption(options::quiting);
+    }
+    
+    if(g == keys::c||g == keys::C)
+    {
+        Dial.clearBox();
+    }
+}
+
+void GameMenu::manipulator_Plants()
+{
+    int g;
+    g = getchar();
+    
+    if(g==keys::w || g==keys::W || g==keys::S || g==keys::s)
+    {
+        side.slider(g);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == potato)
+    {
+        if (!farmers.checkForFreeFarmer())
+        {
+            Dial.AddQuote("Sorry boddy, but you are out of farmers!");
+        }
+        else
+        {
+            plant = plants::potato;
+            y1 = BottomPlank/2 - (MyField.getSize() - 1);
+            x1 = SidePlank/2 - (MyField.getSize() - 1);
+            CharOut('*', y1, x1);
+            side.setMenuOption(options::plantSelectorStart);
+        }
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == wheat)
+    {
+        if (!farmers.checkForFreeFarmer())
+        {
+            Dial.AddQuote("Sorry boddy, but you are out of farmers!");
+        }
+        else
+        {
+            plant = wheat;
+            y1 = BottomPlank/2 - (MyField.getSize() - 1);
+            x1 = SidePlank/2 - (MyField.getSize() - 1);
+            CharOut('*', y1, x1);
+            side.setMenuOption(options::plantSelectorStart);
+        }
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == tomato)
+    {
+        if (!farmers.checkForFreeFarmer())
+        {
+            Dial.AddQuote("Sorry boddy, but you are out of farmers!");
+        }
+        else
+        {
+            plant = tomato;
+            y1 = BottomPlank/2 - (MyField.getSize() - 1);
+            x1 = SidePlank/2 - (MyField.getSize() - 1);
+            CharOut('*', y1, x1);
+            side.setMenuOption(options::plantSelectorStart);
+        }
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == carrot)
+    {
+        if (!farmers.checkForFreeFarmer())
+        {
+            Dial.AddQuote("Sorry boddy, but you are out of farmers!");
+        }
+        else
+        {
+            plant = carrot;
+            y1 = BottomPlank/2 - (MyField.getSize() - 1);
+            x1 = SidePlank/2 - (MyField.getSize() - 1);
+            CharOut('*', y1, x1);
+            side.setMenuOption(options::plantSelectorStart);
+        }
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == pumpkin)
+    {
+        if (!farmers.checkForFreeFarmer())
+        {
+            Dial.AddQuote("Sorry boddy, but you are out of farmers!");
+        }
+        else
+        {
+            plant = pumpkin;
+            y1 = BottomPlank/2 - (MyField.getSize() - 1);
+            x1 = SidePlank/2 - (MyField.getSize() - 1);
+            CharOut('*', y1, x1);
+            side.setMenuOption(options::plantSelectorStart);
+        }
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == strawberry)
+    {
+        if (!farmers.checkForFreeFarmer())
+        {
+            Dial.AddQuote("Sorry boddy, but you are out of farmers!");
+        }
+        else
+        {
+            plant = strawberry;
+            y1 = BottomPlank/2 - (MyField.getSize() - 1);
+            x1 = SidePlank/2 - (MyField.getSize() - 1);
+            CharOut('*', y1, x1);
+            side.setMenuOption(options::plantSelectorStart);
+        }
+    }
+    
+    if(g == keys::c||g == keys::C)
+    {
+        Dial.clearBox();
+    }
+    
+    if(g == keys::e||g == keys::E)
+    {
+        side.setMenuOption(options::main);
+    }
+}
+
+void GameMenu::Building(const enum structures building)
+{
+    bool maxed = false;
+    
+    if (building == numberOfBuildings)
+    {
+        Dial.AddQuote("Error Wrong input!");
+    }
+    else
+    {
+    if (list.check4(buildings[building]))
+    {
+        Dial.AddQuote("You are building that already!");
+        showDialog();
+    }
+    else
+    {
+        switch (building)
+        {
+            case fence:
+                if (MyField.getSize() == MyField.getMaxSize())
+                {
+                    maxed = true;
+                }
+                break;
+                
+            case road:
+                if (possession.getRoad())
+                {
+                    maxed = true;
+                }
+                break;
+                
+            case house:
+                if (possession.getHouseSize() == possession.getMaxHouseSize())
+                {
+                    maxed = true;
+                }
+                break;
+                
+            case tent:
+                if (possession.getTentSize() == possession.getMaxTentSize())
+                {
+                    maxed = true;
+                }
+                break;
+
+            case barracks:
+                if (possession.getBarracks())
+                {
+                    maxed = true;
+                }
+                break;
+                
+            default:
+                break;
+        }
+        if (maxed)
+        {
+            Dial.AddQuote("You have maxed that already");
+            showDialog();
+        }
+        else
+        {
+            if (!farmers.checkForFreeFarmer())
+            {
+                Dial.AddQuote("Sorry boddy, but you are out of farmers!");
+                showDialog();
+            }
+            else
+            {
+                if(buildingExpenses(building)>Res.getWood())
+                {
+                    Dial.AddQuote("You do not have enough resources!");
+                    showDialog();
+                }
+                else
+                {
+                Res.addWood(-buildingExpenses(building));
+                list.AddBuilding(MyField, farmers.checkForFreeFarmer(), Dial, building, possession, screen);
+                }
+            }
+        }
+    }
+  }
+
+}
+
+void GameMenu::manipulator_Building()
+{
+    reveal();
+    side.clear();
+    int g;
+    g = getchar();
+    
+    if(g==keys::w || g==keys::W || g==keys::S || g==keys::s)
+    {
+        side.slider(g);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == fence)
+    {
+        Building(fence);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == road)
+    {
+        Building(road);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == house)
+    {
+        Building(house);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == tent)
+    {
+        Building(tent);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == barracks)
+    {
+        Building(barracks);
+    }
+    
+    if(g == keys::c||g == keys::C)
+    {
+        Dial.clearBox();
+    }
+    
+    if(g == keys::e||g == keys::E)
+    {
+        side.setMenuOption(options::main);
+    }
+    
+}
+
+int GameMenu::buildingExpenses(const enum structures type)
+{
+    int cost = 0;
+    switch (type)
+    {
+    case fence:
+        {
+    switch (MyField.getSize())
+    {
+        case small:
+            cost = 250;
+            break;
+        case medium:
+            cost = 500;
+            break;
+        case large:
+            cost = 1000;
+        default:
+            cost = 0;
+            break;
+    }
+            break;
+    }
+    
+    case road:
+    {
+        cost = 200;
+        break;
+    }
+            
+    case barracks:
+    {
+        cost = 1500;
+        break;
+    }
+            
+    case house:
+        {
+            switch (possession.getHouseSize())
+            {
+                case simple:
+                    cost = 500;
+                    break;
+                case roomy:
+                    cost = 1000;
+                    break;
+                case spacious:
+                    cost = 1500;
+                    break;
+                default:
+                    cost = 0;
+                    break;
+           }
+      }
+        case tent:
+        {
+            switch (possession.getTentSize())
+            {
+                case noTent:
+                    cost = 250;
+                    break;
+                case TentS:
+                    cost = 500;
+                    break;
+                case TentM:
+                    cost = 1000;
+                default:
+                    cost = 0;
+                    break;
+            }
+        }
+    default:
+            break;
+}
+    return cost;
+}
+
+void GameMenu::manipulator_Shop()
+{
+    side.clear();
+    int g;
+    g = getchar();
+    
+    if(g==keys::w || g==keys::W || g==keys::S || g==keys::s)
+    {
+        side.slider(g);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == shop::buying)
+    {
+        selling = false;
+        Dial.AddQuote("So you are willing to buy something?");
+        showDialog();
+        side.setMenuOption(options::buy);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == shop::selling)
+    {
+        selling = true;
+        Dial.AddQuote("So you are willing to sell something?");
+        showDialog();
+        side.setMenuOption(options::sell);
+    }
+    
+    if(g == keys::c||g == keys::C)
+    {
+        Dial.clearBox();
+    }
+    
+    if(g == keys::e||g == keys::E)
+    {
+        side.setMenuOption(options::main);
+    }
+}
+
+void GameMenu::manipulator_Sell()
+{
+    side.clear();
+    int g;
+    g = getchar();
+    
+    if(g==keys::w || g==keys::W || g==keys::S || g==keys::s)
+    {
+        side.slider(g);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == shop::wood)
+    {
+        store = wood;
+        side.setMenuOption(options::amount);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == shop::seeds)
+    {
+        store = seeds;
+        side.setMenuOption(options::amount);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == shop::food)
+    {
+        store = food;
+        side.setMenuOption(options::amount);
+    }
+
+    if(g == keys::c||g == keys::C)
+    {
+        Dial.clearBox();
+    }
+    
+    if(g == keys::e||g == keys::E)
+    {
+        side.setMenuOption(8);
+    }
+}
+
+void GameMenu::manipulator_Buy()
+{
+        side.clear();
+        int g;
+        g = getchar();
+    
+        if(g==keys::w || g==keys::W || g==keys::S || g==keys::s)
+        {
+            side.slider(g);
+        }
+        
+        if((g == keys::f||g == keys::F) && side.getOption() == shop::wood)
+        {
+            store = wood;
+            side.setMenuOption(options::amount);
+        }
+    
+        if((g == keys::f||g == keys::F) && side.getOption() == shop::seeds)
+        {
+            store = seeds;
+            side.setMenuOption(options::amount);
+        }
+    
+        if((g == keys::f||g == keys::F) && side.getOption() == shop::food)
+        {
+            store = food;
+            side.setMenuOption(options::amount);
+        }
+    
+        if((g == keys::f||g == keys::F) && side.getOption() == shop::farmers)
+        {
+            if (possession.getHouseSize() <= farmers.getcount())
+            {
+                Dial.AddQuote("You do not have enough space at home!");
+            }
+            else
+            {
+                if (Res.getMoney() < 200)
+                {
+                    Dial.AddQuote("Sorry but you dont have enoug money");
+                }
+                else
+                {
+                Res.addMoney(-200);
+                    mapResources();
+                farmers.hire(stock.fire(rand()%10));
+                }
+            }
+        }
+    
+        if(g == keys::c||g == keys::C)
+        {
+            Dial.clearBox();
+        }
+        
+        if(g == keys::e||g == keys::E)
+        {
+            side.setMenuOption(8);
+        }
+}
+
+void GameMenu::traiding(const int num)
+{
+    if (selling)
+    {
+        switch (store)
+        {
+            case wood:
+            {
+                if (Res.getWood() >= num)
+                {
+                    Res.addWood(-num);
+                    Res.addMoney(num);
+                }
+                else
+                {
+                    Dial.AddQuote("You dont have enough wood");
+                }
+            }
+            break;
+                
+            case seeds:
+            {
+                if (Res.getSeeds() >= num)
+                {
+                    Res.addSeeds(-num);
+                    Res.addMoney(num/4);
+                }
+                else
+                {
+                    Dial.AddQuote("You dont have enough seeds");
+                }
+            }
+                break;
+
+                
+            case food:
+            {
+                if (Res.getFood() >= num)
+                {
+                    Res.addFood(-num);
+                    Res.addMoney(num/2);
+                }
+                else
+                {
+                    Dial.AddQuote("You dont have enough food");
+                }
+            }
+                break;
+                
+            default:
+                break;
+        }
+    }
+    else
+    {
+        switch (store)
+        {
+            case wood:
+            {
+                if (Res.getMoney() < num*2)
+                {
+                    Dial.AddQuote("You dont have enough money!");
+                }
+                else
+                {
+                Res.addMoney(-num*2);
+                Res.addWood(num);
+                }
+            }
+                break;
+                
+            case seeds:
+            {
+                if (Res.getMoney() < num/2)
+                {
+                    Dial.AddQuote("You dont have enough money!");
+                }
+                else
+                {
+                    Res.addMoney(-num/2);
+                    Res.addSeeds(num);
+                }
+            }
+                break;
+                
+            case food:
+            {
+                if (Res.getMoney() < num)
+                {
+                    Dial.AddQuote("You dont have enough money!");
+                }
+                else
+                {
+                    Res.addMoney(-num);
+                    Res.addFood(num);
+                }
+            }
+                break;
+
+            default:
+                break;
+        }
+        }
+}
+
+void GameMenu::manipulator_Amount()
+{
+    side.clear();
+    int g;
+    g = getchar();
+    
+    if(g==keys::w || g==keys::W || g==keys::S || g==keys::s)
+    {
+        side.slider(g);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == 0)
+    {
+        traiding(100);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == 1)
+    {
+        traiding(250);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == 2)
+    {
+        traiding(500);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == 3)
+    {
+        traiding(1000);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == 4)
+    {
+        traiding(5000);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == 5)
+    {
+        traiding(10000);
+    }
+    
+    if(g == keys::c||g == keys::C)
+    {
+        Dial.clearBox();
+    }
+    
+    if(g == keys::e||g == keys::E)
+    {
+        if (selling)
+        {
+            side.setMenuOption(options::sell);
+        }
+        else
+        {
+            side.setMenuOption(options::buy);
+        }
+    }
+
+}
+
+void GameMenu::selector()
+{
+    if (troops.getAttackerPos() != -1)
+    {
+        troops.getAttacker()->resetShild();
+        drawAll();
+        int row  = troops.getAttackerPos()/4;
+        int card = troops.getAttackerPos()%4;
+        char selector[10][22] =
+        {
+            "#$#$#$#$#$#$#$#$#$#$#",
+            "#                   #",
+            "#                   #",
+            "#                   #",
+            "#                   #",
+            "#                   #",
+            "#                   #",
+            "#                   #",
+            "#                   #",
+            "#$#$#$#$#$#$#$#$#$#$#"
+        };
+        if (row<2 && card<4)
+        {
+            for (int j = 0;j<10; j++)
+            {
+                for (int i = 0; i<21; i++)
+                {
+                    if (selector[j][i] == '#')
+                    {
+                        screen[j+BottomPlank - 20 + row*10][2 + i + card*22] = '^';
+                    }
+                    else if (selector[j][i] == '$')
+                    {
+                        screen[j+BottomPlank - 20 + row*10][2 + i + card*22] = ' ';
+                    }
+                }
+            }
+        }
+    }
+}
+
+void GameMenu::choose(int row, int card)
+{
+    char selector[10][22] =
+    {
+        "# # # # # # # # # # #",
+        "#********/$*********#",
+        "#*******/  $********#",
+        "#******/ /$ $*******#",
+        "#*****/ /  $ $******#",
+        "#*****$ $ $ $ $*****#",
+        "#******$ $ $/ /*****#",
+        "#*******$ $  /******#",
+        "#********$ $/*******#",
+        "# # # # # # # # # # #"
+    };
+    if (row<2 && card<4)
+    {
+        for (int j = 0;j<10; j++)
+        {
+            for (int i = 0; i<21; i++)
+            {
+                if (selector[j][i] == '#')
+                {
+                    screen[j+BottomPlank - 20 + row*10][2 + i + card*22] = char(6);
+                }
+                else if (selector[j][i] == '*')
+                {
+                screen[j+BottomPlank - 20 + row*10][2 + i + card*22] = '^';
+                }
+                else if (selector[j][i] == '$')
+                {
+                    screen[j+BottomPlank - 20 + row*10][2 + i + card*22] = '\\';
+                }
+                else
+                {
+                    screen[j+BottomPlank - 20 + row*10][2 + i + card*22] = selector[j][i];
+                }
+            }
+        }
+    }
+}
+
+void GameMenu::Zselector(const int position)
+{
+    char selector[10][12] =
+    {
+        "#$#$#$#$#$#",
+        "#$        #",
+        "#$        #",
+        "#$        #",
+        "#$        #",
+        "#$        #",
+        "#$        #",
+        "#$        #",
+        "#$        #",
+        "#$#$#$#$#$#"
+    };
+    
+    if (position<8 && position>(-1))
+    {
+        for (int j = 0;j<10; j++)
+        {
+            for (int i = 0; i<11; i++)
+            {
+                if (selector[j][i] == '#')
+                {
+                    screen[5+j][1 + i + position*11] = char(6);
+                }
+                else if (selector[j][i] == '$')
+                {
+                    screen[5+j][1 + i + position*11] = ' ';
+                }
+            }
+        }
+    }
+}
+
+void GameMenu::manipulator_Inventory()
+{
+    bool exit = false;
+    int g = '0';
+    g = getchar();
+    
+    if(g == keys::W||g == keys::w)
+    {
+        if(x2 > 10)
+        {
+            x2 -= 6;
+        }
+        else if(x2 == 1)
+        {
+            x2 -= 1;
+        }
+        else if(x2 > 1 && x2 < 5)
+        {
+            x2 = 1;
+        }
+        else if(x2 > 4 && x2 < 11)
+        {
+            x2 = 4;
+        }
+        else
+        {
+            x2 = 22;
+        }
+    }
+    
+    if(g == keys::S||g == keys::s)
+    {
+        if(x2 == 0)
+        {
+            x2 = 1;
+        }
+        else if(x2 == 1)
+        {
+            x2 = 4;
+        }
+        else if(x2 > 1 && x2 < 5)
+        {
+            x2 = 5;
+        }
+        else if(x2 > 16)
+        {
+            x2 = 0;
+        }
+        else
+        {
+            x2 += 6;
+        }
+    }
+    if(g == keys::A||g == keys::a)
+    {
+        if(x2 == 5 || x2 == 11 || x2 == 17)
+        {
+            x2 += 5;
+            
+            if (y2 == 0)
+            {
+                y2 = items.getNumberOfPages();
+            }
+            else
+            {
+                y2--;
+            }
+        }
+        else if(x2 == 0 || x2 == 1)
+        {
+            x2 = 2;
+        }
+        else if(x2 == 2)
+        {
+            x2 = 4;
+        }
+        else
+        {
+            x2--;
+        }
+    }
+    
+    if(g == keys::D||g == keys::d)
+    {
+        if(x2 == 10 || x2 == 16 || x2 == 22)
+        {
+            x2 -= 5;
+            if (y2 == items.getNumberOfPages())
+            {
+                y2 = 0;
+            }
+            else
+            {
+                y2++;
+            }
+        }
+        else if(x2 == 0 || x2 == 1)
+        {
+            x2 = 2;
+        }
+        else if(x2 == 4)
+        {
+            x2 = 2;
+        }
+        else
+        {
+            x2 ++ ;
+        }
+    }
+    
+    if(g == keys::E||g == keys::e)
+    {
+        if(!battle)
+        {
+           side.setMenuOption(options::battle);
+        }
+        else
+        {
+            side.setMenuOption(options::attacking);
+        }
+        exit = true;
+    }
+    
+    if(g == keys::L||g == keys::l)
+    {
+        if (x2>4)
+        {
+            if (items.getItem((x2-5)+y2*18))
+            {
+                Res.addMoney(items.getItem((x2-5)+y2*18)->getPrice());
+                items.removeItem(x2-5+y2*18);
+            }
+        }
+        else if(x2 == 0)
+        {
+            if (troops.getUnit(y1, x1)->getHelmet())
+            {
+                items.addItem(troops.getUnit(y1, x1)->equipHelmet(nullptr));
+                Res.addMoney(items.getItem(items.getCount() - 1)->getPrice());
+                items.removeItem(items.getCount() - 1);
+            }
+        }
+        else if(x2 == 1)
+        {
+            if (troops.getUnit(y1, x1)->getChest())
+            {
+                items.addItem(troops.getUnit(y1, x1)->equipChest(nullptr));
+                Res.addMoney(items.getItem(items.getCount() - 1)->getPrice());
+                items.removeItem(items.getCount() - 1);
+            }
+        }
+        else if(x2 == 2)
+        {
+            if (troops.getUnit(y1, x1)->getWeapon())
+            {
+                items.addItem(troops.getUnit(y1, x1)->equipWeapon(nullptr));
+                Res.addMoney(items.getItem(items.getCount() - 1)->getPrice());
+                items.removeItem(items.getCount() - 1);
+            }
+        }
+        else if(x2 == 3)
+        {
+            if (troops.getUnit(y1, x1)->getBoots())
+            {
+                items.addItem(troops.getUnit(y1, x1)->equipBoots(nullptr));
+                Res.addMoney(items.getItem(items.getCount() - 1)->getPrice());
+                items.removeItem(items.getCount() - 1);
+            }
+        }
+        else if(x2 == 4)
+        {
+            if (troops.getUnit(y1, x1)->getGloves())
+            {
+                items.addItem(troops.getUnit(y1, x1)->equipGloves(nullptr));
+                Res.addMoney(items.getItem(items.getCount() - 1)->getPrice());
+                items.removeItem(items.getCount() - 1);
+            }
+        }
+    }
+    
+    if(g == keys::F||g == keys::f)
+    {
+        if (x2>4)
+        {
+            if (items.getItem((x2-5)+y2*18))
+            {
+                unit* Unit = troops.getUnit(y1, x1);
+                item* Item= items.getItem(x2-5+y2*18);
+                char buff[20]  = {};
+                char dbuff[12] = {};
+                for (int i = 0; i<20; i++)
+                {
+                    buff[i] = Item->getName(i);
+                }
+                for (int i = 0; i<12; i++)
+                {
+                    if (Item->getPic(1, i+1) != ' ')
+                    {
+                        dbuff[i] = Item->getPic(1, i+1);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                if(equals(dbuff, "Helmet"))
+                {
+                    items.replaceItem(Unit->equipHelmet(loader.helmet(buff)), (x2-5+y2*18));
+                }
+                if(equals(dbuff, "Chest"))
+                {
+                    items.replaceItem(Unit->equipChest(loader.chest(buff)),   (x2-5+y2*18));
+                }
+                if(equals(dbuff, "Gloves"))
+                {
+                    items.replaceItem(Unit->equipGloves(loader.gloves(buff)), (x2-5+y2*18));
+                }
+                if(equals(dbuff, "Boots"))
+                {
+                    items.replaceItem(Unit->equipBoots(loader.boots(buff)),   (x2-5+y2*18));
+                }
+                if(equals(dbuff, "Weapon"))
+                {
+                    items.replaceItem(Unit->equipWeapon(loader.weapon(buff)), (x2-5+y2*18));
+                }
+                if (battle)
+                {
+                    troops.getAttacker()->usedTurn();
+                    side.setMenuOption(attacking);
+                    exit = true;
+                }
+            }
+        }
+        else if(x2 == 0)
+        {
+            if (troops.getUnit(y1, x1)->getHelmet())
+            {
+                items.addItem(troops.getUnit(y1, x1)->equipHelmet(nullptr));
+            }
+        }
+        else if(x2 == 1)
+        {
+            if (troops.getUnit(y1, x1)->getChest())
+            {
+                items.addItem(troops.getUnit(y1, x1)->equipChest(nullptr));
+            }
+        }
+        else if(x2 == 2)
+        {
+            if (troops.getUnit(y1, x1)->getWeapon())
+            {
+                items.addItem(troops.getUnit(y1, x1)->equipWeapon(nullptr));
+            }
+        }
+        else if(x2 == 3)
+        {
+            if (troops.getUnit(y1, x1)->getBoots())
+            {
+                items.addItem(troops.getUnit(y1, x1)->equipBoots(nullptr));
+            }
+        }
+        else if(x2 == 4)
+        {
+            if (troops.getUnit(y1, x1)->getGloves())
+            {
+                items.addItem(troops.getUnit(y1, x1)->equipGloves(nullptr));
+            }
+        }
+    }
+    
+    if (y2 > items.getNumberOfPages())
+    {
+        y2 = items.getNumberOfPages();
+    }
+    
+    if (!exit)
+    {
+        drawInventory();
+        itemSelector();
+    }
+    else if(exit && battle)
+    {
+        clear();
+        drawAll();
+        drawUndead();
+        whosTurn();
+    }
+    else
+    {
+        clear();
+    }
+}
+
+void GameMenu::itemSelector()
+{
+    int position = x2;
+    
+    char selector[5][14] =
+    {
+        "$$$$$$$$$$$$$",
+        "$           $",
+        "$           $",
+        "$           $",
+        "$$$$$$$$$$$$$"
+    };
+    
+    if (position >= 5)
+    {
+    int row = (position - 5)/6;
+    int card = (position - 5)%6;
+        
+        for (int j = 0; j<5; j++)
+        {
+            for (int i = 0; i<13; i++)
+            {
+                if(selector[j][i] == '$')
+                {
+                    screen[j+BottomPlank - 15 + row*5][4 + i + card*14] = char(8);
+                }
+                else
+                {
+                    
+                }
+            }
+        }
+    }
+    else if (position == 0)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                if(selector[j][i] == '$')
+                {
+                    screen[j + 4][i + 26] = char(8);
+                }
+                else
+                {
+                    
+                }
+            }
+        }
+    }
+    else if (position == 1)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                if(selector[j][i] == '$')
+                {
+                    screen[j + 9][i + 26] = char(8);
+                }
+                else
+                {
+                    
+                }
+            }
+        }
+    }
+    else if (position == 3)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                if(selector[j][i] == '$')
+                {
+                    screen[j + 14][i + 14] = char(8);
+                }
+                else
+                {
+                    
+                }
+            }
+        }
+    }
+    else if (position == 4)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                if(selector[j][i] == '$')
+                {
+                    screen[j + 14][i + 26] = char(8);
+                }
+                else
+                {
+                    
+                }
+            }
+        }
+    }
+    else
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                if(selector[j][i] == '$')
+                {
+                    screen[j + 14][i + 2] = char(8);
+                }
+                else
+                {
+                    
+                }
+            }
+        }
+    }
+}
+
+void GameMenu::zombieSelector()
+{
+    int last = horde.getCount()-1;
+    
+    if (horde.getCount() > 7)
+    {
+        last = 7;
+    }
+    
+    while (horde.getUnit(x1)->getType() == wasted)
+    {
+        x1++;
+        if (x1 > last)
+        {
+            x1 = 0;
+        }
+    }
+    
+    char selector[10][11] =
+    {
+        "# # # #  #",
+        "# $****/ #",
+        "#$ $**/ /#",
+        "#*$ $/ /*#",
+        "#**$  /**#",
+        "#**/  $**#",
+        "#*/ /$ $*#",
+        "#/ /**$ $#",
+        "# /****$ #",
+        "#  # # # #"
+    };
+    if (x1<8 && x1>(-1))
+    {
+        for (int j = 0;j<10; j++)
+        {
+            for (int i = 0; i<10; i++)
+            {
+                if (selector[j][i] == '#')
+                {
+                    screen[5+j][2 + i + x1*11] = char(6);
+                }
+                else if (selector[j][i] == '*')
+                {
+                    screen[5+j][2 + i + x1*11] = '^';
+                }
+                else if (selector[j][i] == '$')
+                {
+                    screen[5+j][2 + i + x1*11] = '\\';
+                }
+                else
+                {
+                    screen[5+j][2 + i + x1*11] = selector[j][i];
+                }
+            }
+        }
+    }
+}
+
+void GameMenu::swapCards(const int y1,const int x1,const int y2,const int x2)
+{
+    troops.swap(y1, x1, y2, x2);
+}
+
+void GameMenu::manipulator_upgrading()
+{
+    bool exit = false;
+    int g;
+    g = getchar();
+    if(g == keys::W||g == keys::w||g == keys::S||g == keys::s)
+    {
+        if(y1 != 1)
+        {
+            y1 = 1;
+        }
+        else
+            y1 = 0;
+    }
+    
+    if(g == keys::A||g == keys::a)
+    {
+        if(x1>0)
+        {
+            x1--;
+        }
+        else
+        {
+            x1 = 3;
+        }
+    }
+    
+    if(g == keys::D||g == keys::d)
+    {
+        if(x1<3)
+        {
+            x1++;
+        }
+        else
+        {
+            x1 = 0;
+        }
+    }
+    
+    if(g == keys::E||g == keys::e)
+    {
+        side.setMenuOption(options::battle);
+        exit = true;
+    }
+    
+    if(g == keys::F||g == keys::f)
+    {
+        if (troops.getUnit(y1, x1)->getType() == rookie && troops.getUnit(y1, x1)->getLvl() >= 10)
+        {
+            clear();
+            side.setMenuOption(options::lvling);
+            exit = true;
+            choosing2lvl(0);
+            drawUpgrade();
+            Dial.AddQuote("Press \"I\" to get info");
+        }
+        else
+        {
+            Dial.AddQuote("Unit should be a lvl 10 solder to upgrade!");
+        }
+    }
+    if (!exit)
+    {
+        drawAll();
+        choose(y1, x1);
+    }
+}
+
+void GameMenu::manipulator_equip()
+{
+    bool exit;
+    int g;
+    g = getchar();
+    if(g == keys::W||g == keys::w||g == keys::S||g == keys::s)
+    {
+        if(y1 != 1)
+        {
+            y1 = 1;
+        }
+        else
+        {
+            y1 = 0;
+        }
+    }
+    
+    if(g == keys::A||g == keys::a)
+    {
+        if(x1>0)
+        {
+            x1--;
+        }
+        else
+        {
+            x1 = 3;
+        }
+    }
+    
+    if(g == keys::D||g == keys::d)
+    {
+        if(x1<3)
+        {
+            x1++;
+        }
+        else
+        {
+            x1 = 0;
+        }
+    }
+    
+    if(g == keys::E||g == keys::e)
+    {
+        side.setMenuOption(options::battle);
+    }
+    
+    if(g == keys::F||g == keys::f)
+    {
+        if (troops.getUnit(y1, x1)->getType() != untitled)
+        {
+            drawInventory();
+            itemSelector();
+            side.setMenuOption(options::sorting);
+            exit = true;
+        }
+        else
+        {
+            Dial.AddQuote("You should select a Unit.");
+        }
+    }
+    
+    if (!exit)
+    {
+        drawAll();
+        choose(y1, x1);
+    }
+}
+
+void GameMenu::blink(const int position, bool present)
+{
+    for (int j = 0; j<10; j++)
+    {
+        for (int i = 0; i<10; i++)
+        {
+            if (present)
+            {
+                screen[5+j][i + 2  + position*11] = ' ';
+            }
+            else
+            {
+                screen[5+j][i + 2  + position*11] = horde.getUnit(position)->getPic(j, i);
+            }
+        }
+    }
+}
+
+void GameMenu::massAttack(const int Dmg)
+{
+    int countDown = 8;
+    
+    for (int i = 0; i<4; i++)
+    {
+        if (horde.exists(3-i) || horde.exists(4+i))
+        {
+            countDown = 8;
+            while (countDown)
+            {
+                if (horde.exists(3-i))
+                {
+                    blink(3-i, countDown%2);
+                }
+                if (horde.exists(4+i))
+                {
+                    blink(4+i, countDown%2);
+                }
+                print();
+                countDown--;
+                usleep(120000);
+            }
+            if (horde.exists(3-i))
+            {
+                horde.getUnit(3-i)->damage(Dmg);
+            }
+            if (horde.exists(4+i))
+            {
+                horde.getUnit(4+i)->damage(Dmg);
+            }
+            drawUndead();
+        }
+    }
+}
+
+void GameMenu::splash()
+{
+    if (troops.getAttacker()->getSplash())
+    {
+        if (horde.exists(x1-1) || horde.exists(x1+1))
+        {
+            int countDown = 8;
+            
+            while (countDown)
+            {
+                if (horde.exists(x1-1))
+                {
+                    blink(x1-1, countDown%2);
+                }
+                if (horde.exists(x1+1))
+                {
+                    blink(x1+1, countDown%2);
+                }
+                print();
+                countDown--;
+                usleep(130000);
+            }
+            
+            int splash = (troops.getAttacker()->getSplash()*troops.getAttacker()->getDamage())/100;
+            
+            if (horde.exists(x1-1))
+            {
+                horde.getUnit(x1-1)->damage(splash);
+            }
+            if (horde.exists(x1+1))
+            {
+                horde.getUnit(x1+1)->damage(splash);
+            }
+            drawUndead();
+        }
+    }
+}
+
+void GameMenu::manipulator_Slashing()
+{
+        bool exit = false;
+        int last = horde.getCount()-1;
+        
+        if (horde.getCount() > 7)
+        {
+            last = 7;
+        }
+    
+        int g;
+        g = getchar();
+    
+        if(g == keys::A||g == keys::a)
+        {
+            x1--;
+            if (x1 < 0)
+            {
+                x1 = last;
+            }
+            while (horde.getUnit(x1)->getType() == wasted)
+            {
+                x1--;
+                if (x1 < 0)
+                {
+                    x1 = last;
+                }
+            }
+        }
+        
+        if(g == keys::D||g == keys::d)
+        {
+            x1++;
+            if (x1 > last)
+            {
+                x1 = 0;
+            }
+            while (horde.getUnit(x1)->getType() == wasted)
+            {
+                x1++;
+                if (x1 > last)
+                {
+                    x1 = 0;
+                }
+            }
+        }
+        
+        if(g == keys::E||g == keys::e)
+        {
+            side.setMenuOption(options::attacking);
+            exit= true;
+        }
+        
+        if(g == keys::F||g == keys::f)
+        {
+            attack();
+            resetVariables();
+            whosTurn();
+            exit = true;
+        }
+    
+        drawUndead();
+    
+        if (!exit)
+        {
+            drawAll();
+            zombieSelector();
+            selector();
+        }
+}
+
+void GameMenu::healingAnimation()
+{
+    int count = 0;
+    char buff[16][20]=
+    {
+        "+     +        +   ",
+        "   +       +    +  ",
+        "  +                ",
+        "        +     +    ",
+        "  +        +      +",
+        "       +           ",
+        "   +           +   ",
+        "+       +    +     ",
+        "  +        +     + ",
+        "   +  +       +    ",
+        "+          +       ",
+        "      +         +  ",
+        "  +        +      +",
+        "       +           ",
+        "   +      +    +   ",
+        "+       +    +     "
+    };
+    
+    char front[4][20]=
+    {
+        "         __        ",
+        "       _|**|_      ",
+        "      |_****_|     ",
+        "        |__|       ",
+    };
+    
+    for (int j = 0; j<16; j++)
+    {
+        for (int i = 0; i<20; i++)
+        {
+            if(buff[j][i] == '+')
+            {
+                buff[j][i] = char(1);
+            }
+        }
+    }
+    
+    while (count<16)
+    {
+        for (int j = 0; j<8; j++)
+        {
+            for (int i = 0; i<19; i++)
+            {
+                if (j+count%17 >= 16)
+                {
+                    CharOut(buff[(j+count-8)%17][i], j + BottomPlank + y1*10 - 19, i + x1*22 + 3);
+                }
+                else
+                {
+                    CharOut(buff[(j+count)%17][i],  j + BottomPlank + y1*10 - 19, i + x1*22 + 3);
+                }
+            }
+        }
+        for (int j = 0; j<4; j++)
+        {
+            for (int i = 0; i<19; i++)
+            {
+                if (front[j][i] == '*')
+                {
+                    CharOut(' ',  j + BottomPlank + y1*10 - 18, i + x1*22 + 3);
+                }
+                else if (front[j][i] != ' ')
+                {
+                    CharOut(front[j][i],  j + BottomPlank + y1*10 - 18, i + x1*22 + 3);
+                }
+            }
+        }
+        count++;
+        usleep(100000);
+        print();
+    }
+    drawAll();
+}
+
+void GameMenu::ZombieBiteAninmation()
+{
+    int count = 16;
+    
+    char front[2][9] =
+    {
+        " \\/\\/\\/ ",
+        "  /\\/\\  "
+    };
+    
+    x1 = horde.getAttackerPos();
+    
+    while (count>0)
+    {
+        for (int j = 0; j<8; j++)
+        {
+            for (int i = 0; i<8; i++)
+            {
+                CharOut(' ', j+6, i + 3  + x1*11);
+                
+                if (count%2 == 0 && j == 3)
+                {
+                    CharOut(front[0][i], j+6, i + 3  + x1*11);
+                }
+                else if(count%2 == 0 && j == 4)
+                {
+                    CharOut(front[1][i], j+6, i + 3  + x1*11);
+                }
+                if(count%2 == 1 && j == 2)
+                {
+                    CharOut(front[0][i], j+6, i + 3  + x1*11);
+                }
+                else if(count%2 == 1 && j == 5)
+                {
+                    CharOut(front[1][i], j+6, i + 3  + x1*11);
+                }
+            }
+        }
+        
+        count--;
+        usleep(100000);
+        print();
+    }
+}
+
+void GameMenu::ZombiePirsAnimation()
+{
+    int count = 0;
+    char buff[8][9] =
+    {
+        "   |    ",
+        " |   |  ",
+        "|  |    ",
+        "  |  | |",
+        "        ",
+        "|  |  | ",
+        " |   |  ",
+        "  |    |"
+    };
+    char front[4][9] =
+    {
+    " /|/|/| ",
+    " |||||| ",
+    " |||||| ",
+    " \\|\\|\\| "
+    };
+    while (count<16)
+    {
+        for (int j = 0; j<8; j++)
+        {
+            for (int i = 0; i<8; i++)
+            {
+                if (j-count%9 < 0)
+                {
+                    CharOut(buff[j-count%9+8][i], j+6, i + 3  + x1*11);
+                }
+                else
+                {
+                    CharOut(buff[j-count%9][i], j+6, i + 3  + x1*11);
+                }
+            }
+        }
+        
+        for (int j = 0; j<4; j++)
+        {
+            for (int i = 0; i<8; i++)
+            {
+                if (front[j][i] != ' ')
+                {
+                    CharOut(front[j][i], j+8, i + 3  + x1*11);
+                }
+            }
+        }
+        count++;
+        usleep(100000);
+        print();
+    }
+}
+
+void GameMenu::ZombieBuffAnimation()
+{
+    int count = 0;
+    char buff[3][9] =
+    {
+    "   /\\   ",
+    "  /  \\  ",
+    " / /\\ \\ "
+    };
+    
+    while (count<16)
+    {
+        for (int j = 0; j<8; j++)
+        {
+            for (int i = 0; i<8; i++)
+            {
+                CharOut(buff[(j+count)%3][i], j+6, i + 3  + x1*11);
+            }
+        }
+        count++;
+        usleep(100000);
+        print();
+    }
+    drawUndead();
+}
+
+void GameMenu::stun()
+{
+    int stunned = troops.getAttacker()->getStuned();
+    if (horde.exists(x1))
+    {
+        if (stunned)
+        {
+            ZombieStunnedAnimation();
+            horde.getUnit(x1)->setStunned(stunned);
+        }
+    }
+    drawUndead();
+}
+
+void GameMenu::pirs()
+{
+    int pirs = troops.getAttacker()->getPirs();
+    if (pirs)
+    {
+        if (horde.exists(x1))
+        {
+            if (pirs*3 > horde.getUnit(x1)->getBleedDmg())
+            {
+                ZombiePirsAnimation();
+                horde.getUnit(x1)->setBleeding(3, pirs);
+            }
+        }
+    }
+    drawUndead();
+}
+
+void GameMenu::crit()
+{
+    int crit = (troops.getAttacker()->getCrited())*(troops.getAttacker()->getDamage())/100;
+    if (crit)
+    {
+        ZombieCritAnimation();
+        horde.getUnit(x1)->damage(crit);
+    }
+    else
+    {
+        slashedAnimation();
+    }
+    drawUndead();
+}
+
+void GameMenu::attack()
+{
+    clear();
+    drawAll();
+    drawUndead();
+    selector();
+    crit();
+    stun();
+    pirs();
+    splash();
+    troops.getAttacker()->usedTurn();
+    side.setMenuOption(attacking);
+}
+
+void GameMenu::massHeal(const int factor)
+{
+    for (int row = 0; row<2; row++)
+    {
+        for (int card = 0; card<4; card++)
+        {
+            if(troops.getUnit(row, card)->getType() != untitled)
+            {
+                troops.getUnit(row, card)->HpUp(factor);
+                troops.getUnit(row, card)->picture();
+            }
+        }
+    }
+}
+
+void GameMenu::manipulator_Choosing()
+{
+    bool exit = false;
+    int g = '0';
+    g = getchar();
+    if(g == keys::W||g == keys::w||g == keys::S||g == keys::s)
+    {
+        if(y1 != 1)
+        {
+            y1 = 1;
+        }
+        else
+            y1 = 0;
+    }
+    
+    if(g == keys::A||g == keys::a)
+    {
+        if(x1>0)
+        {
+            x1--;
+        }
+        else
+        {
+            x1 = 3;
+        }
+    }
+    
+    if(g == keys::D||g == keys::d)
+    {
+        if(x1<3)
+        {
+            x1++;
+        }
+        else
+        {
+            x1 = 0;
+        }
+    }
+    
+    if(g == keys::E||g == keys::e)
+    {
+        if(side.getMenuOption() == options::choosing)
+        {
+            if (capture)
+            {
+                capture = false;
+            }
+            else
+            {
+                clear();
+                drawAll();
+                drawUndead();
+                print();
+                side.setMenuOption(options::battle);
+                exit = true;
+            }
+        }
+        else
+        {
+            side.setMenuOption(options::attacking);
+            exit = true;
+        }
+    }
+    
+    if(g == keys::F||g == keys::f)
+    {
+        if(side.getMenuOption() == options::choosing)
+        {
+            if (capture)
+            {
+                swapCards(y1, x1, y2, x2);
+                capture = false;
+            }
+            else
+            {
+                x2 = x1;
+                y2 = y1;
+                capture = true;
+            }
+        }
+        else
+        {
+            clear();
+            troops.getUnit(y1, x1)->HpUp(100);
+            troops.getAttacker()->usedTurn();
+            side.setMenuOption(options::attacking);
+            exit = true;
+            drawAll();
+            drawUndead();
+            healingAnimation();
+            whosTurn();
+            selector();
+        }
+    }
+    if (!exit)
+    {
+        drawAll();
+        choose(y1, x1);
+    }
+    if (capture == true)
+    {
+        choose(y2, x2);
+    }
+}
+
+void GameMenu::manipulator_Battle()
+{
+        int g;
+        g = getchar();
+        
+        if(g==keys::w || g==keys::W || g==keys::S || g==keys::s)
+        {
+            side.slider(g);
+        }
+        
+        if((g == keys::f||g == keys::F) && side.getOption() == options::begin)
+        {
+            side.setMenuOption(options::attacking);
+            setUndead();
+            resetVariables();
+            drawAll();
+            battle = true;
+            drawUndead();
+            resetTurns();
+            selector();
+        }
+        
+        if((g == keys::f||g == keys::F) && side.getOption() == options::swap)
+        {
+            hide();
+            drawAll();
+            resetVariables();
+            choose(y1, x1);
+            side.setMenuOption(options::choosing);
+        }
+        
+        if((g == keys::f||g == keys::F) && side.getOption() == options::lvl)
+        {
+            hide();
+            resetVariables();
+            side.setMenuOption(options::upgrading);
+            drawAll();
+            choose(y1, x1);
+        }
+        
+        if((g == keys::f||g == keys::F) && side.getOption() == options::feed)
+        {
+            if (Res.getFood() < troops.rollcall()*3+farmers.getcount()*2+allMissingHp())
+            {
+                Dial.AddQuote("You dont have enough food to feed your troops");
+            }
+            else
+            {
+                Res.addFood(-(troops.rollcall()*1+farmers.getcount()*2+allMissingHp()));
+                for (int row = 0; row < 2; row++)
+                {
+                    for (int card = 0; card < 4; card++)
+                    {
+                        troops.getUnit(row, card)->OverHeal();
+                        troops.getUnit(row, card)->picture();
+                    }
+                }
+                drawAll();
+            }
+        }
+
+        if((g == keys::f||g == keys::F) && side.getOption() == options::hire)
+        {
+            if (!possession.getRoad() && !possession.getBarracks())
+            {
+                Dial.AddQuote("In order to equip and train your units");
+                Dial.AddQuote("You need to get access to the shop first! Build road and baraks.");
+            }
+            else
+            {
+                if (farmers.getcount() < 2)
+                {
+                    Dial.AddQuote("You don't have people to train");
+                }
+                else
+                {
+                    if (Res.getMoney()<500)
+                    {
+                        Dial.AddQuote("You dont have enough money to buy equipment (500)");
+                    }
+                    else
+                    {
+                        Res.addMoney(-500);
+                        farmers.death(0);
+                        addUnit();
+                    }
+                }
+            }
+        }
+    
+        if((g == keys::f||g == keys::F) && side.getOption() == options::equip)
+        {
+            hide();
+            resetVariables();
+            side.setMenuOption(options::equiping);
+            drawAll();
+            choose(y1, x1);
+        }
+    
+        if(g == keys::e)
+        {
+            side.setMenuOption(options::main);
+            clear();
+            reveal();
+        }
+        
+        if(g == keys::c||g == keys::C)
+        {
+            Dial.clearBox();
+            showDialog();
+        }
+        
+        if(g == keys::e||g == keys::E)
+        {
+            side.setMenuOption(options::main);
+        }
+}
+
+void GameMenu::resetVariables()
+{
+    x1 = 0;
+    x2 = 0;
+    y1 = 0;
+    y2 = 0;
+}
+
+int GameMenu::allMissingHp()
+{
+    int wounds = 0;
+    for (int row = 0; row < 2; row++)
+    {
+        for (int card = 0; card < 4; card++)
+        {
+            wounds += troops.getUnit(row, card)->missingHP();
+        }
+    }
+    return wounds;
+}
+
+void GameMenu::massExp(const int factor)
+{
+        for (int row = 0; row<2; row++)
+        {
+            for (int card = 0; card<4; card++)
+            {
+                if(troops.getUnit(row, card)->getType() != untitled)
+                {
+                    troops.getUnit(row, card)->add_exp(factor);
+                }
+            }
+        }
+}
+
+void GameMenu::manipulator_Work()
+{
+    side.clear();
+    int g;
+    g = getchar();
+    
+    if(g==keys::w || g==keys::W || g==keys::S || g==keys::s)
+    {
+        side.slider(g);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == chop)
+    {
+        if (!farmers.freeFarmers())
+        {
+            Dial.AddQuote("Sorry boddy, but you are out of farmers!");
+        }
+        else
+        {
+        Dial.AddQuote("Your farmer went into the woods");
+        list.AddWork(farmers.checkForFreeFarmer(), Dial, chop, Res);
+        showDialog();
+        }
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == adventure)
+    {
+        if (!farmers.freeFarmers())
+        {
+            Dial.AddQuote("Sorry boddy, but you are out of farmers!");
+        }
+        else
+        {
+        Dial.AddQuote("Your farmer went on an adventure");
+        list.AddWork(farmers.checkForFreeFarmer(), Dial, adventure, Res);
+        showDialog();
+        }
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == collect)
+    {
+        if (!farmers.checkForFreeFarmer())
+        {
+            Dial.AddQuote("Sorry boddy, but you are out of farmers!");
+        }
+        else
+        {
+            if ((list.getHead() == nullptr )||( list.getHead()->show_progress() == false))
+            {
+            Dial.AddQuote("There is nothing to collect on the field");
+            }
+            else if(Animation.getDone() != chill)
+            {
+                Dial.AddQuote("You are already working on a field");
+            }
+            else
+            {
+            side.clear();
+            print();
+            Animation.startCollecting(farmers.checkForFreeFarmer());
+            mapResources();
+            }
+        }
+        showDialog();
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == shop)
+    {
+        if (!possession.getRoad())
+        {
+            Dial.AddQuote("The Road is required in order to access the Shop");
+            showDialog();
+        }
+        else
+        {
+            side.setMenuOption(shopping);
+        }
+    }
+    
+    if(g == keys::e)
+    {
+        side.setMenuOption(options::main);
+    }
+    
+    if(g == keys::c||g == keys::C)
+    {
+        Dial.clearBox();
+    }
+    
+    if(g == keys::e||g == keys::E)
+    {
+        side.setMenuOption(options::main);
+    }
+    
+}
+
+void GameMenu::clear()
+{
+    for (int j = 4; j<BottomPlank; j++)
+    {
+        for (int i = 1; i<SidePlank; i++)
+        {
+            screen[j][i] = ' ';
+        }
+    }
+}
+
+void GameMenu::manipulator_Exit()
+{
+    side.clear();
+    int g;
+    g = getchar();
+    
+    if(g==keys::w || g==keys::W || g==keys::S || g==keys::s)
+    {
+        side.slider(g);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == yes)
+    {
+        Dial.AddQuote("Cya");
+        showDialog();
+        print();
+        exit(0);
+    }
+    
+    if((g == keys::f||g == keys::F) && side.getOption() == no)
+    {
+        side.setMenuOption(main);
+    }
+    
+    if(g == keys::e)
+    {
+        side.setMenuOption(1);
+    }
+    
+    if(g == keys::c||g == keys::C)
+    {
+        Dial.clearBox();
+    }
+    
+    if(g == keys::e||g == keys::E)
+    {
+        side.setMenuOption(options::main);
+    }
+ 
+}
+
+void GameMenu::hide()
+{
+    clear();
+    MyField.hide();
+    possession.hide();
+    Animation.hide();
+}
+
+void GameMenu::reveal()
+{
+    MyField.reveal();
+    MyField.BuildFence();
+    MyField.showField();
+    possession.reveal();
+    possession.buildHome();
+    Animation.reveal();
+    if (possession.getRoad())
+    {
+        possession.buildRoad();
+    }
+    if (possession.getBarracks())
+    {
+        possession.buildBaracks();
+    }
+    if (possession.getTentSize() != noTent)
+    {
+        possession.buildTent();
+    }
+}
+
+GameMenu::GameMenu(int x, int y, int k, int l, bool Loading):
+MyField(screen),
+Animation(screen, MyField, list, Res, Dial),
+animate(false),
+stock(Dial),
+plant(potato),
+MainMenu(x,y),
+SidePlank(k),
+BottomPlank(l),
+possession(screen),
+Res(possession),
+progress(screen, list),
+win(false),
+selling(false),
+battle(false),
+store(wood),
+capture(false)
+{
+    resetVariables();
+    clear();
+    for(int j = 1; j<y-1; j++)
+    {
+        screen[BottomPlank][j] = '_';
+    }
+    
+    for(int j = 1; j<y-1; j++)
+    {
+        screen[3][j] = '_';
+    }
+
+    for(int j = 1; j<x; j++)
+    {
+        screen[j][SidePlank] = '|';
+    }
+    
+    for(int i = 0; i<strlen(text_2::day); i++)
+    {
+        screen[2][(SidePlank+i)+2] = text_2::day[i];
+    }
+    
+    for(int i = 0; i<strlen(text_2::time); i++)
+    {
+        screen[2][(y+i)-(strlen(text_2::day)+10)] = text_2::time[i];
+    }
+    screen[2][y-5] = ':';
+    
+    int position = 3;
+    
+    for(int i = 0; i<strlen(text_2::wood); i++)
+    {
+        screen[2][(position)] = text_2::wood[i];
+        position++;
+    }
+    position +=Res.getSpace();
+    
+    for(int i = 0; i<strlen(text_2::seeds); i++)
+    {
+        screen[2][(position)] = text_2::seeds[i];
+        position++;
+    }
+    position +=Res.getSpace();
+    
+    for(int i = 0; i<strlen(text_2::food); i++)
+    {
+        screen[2][(position)] = text_2::food[i];
+        position++;
+    }
+    position +=Res.getSpace();
+    
+    for(int i = 0; i<strlen(text_2::money); i++)
+    {
+        screen[2][(position)] = text_2::money[i];
+        position++;
+    }
+    position +=Res.getSpace();
+    
+    for(int i = 0; i<strlen(text_2::farmers); i++)
+    {
+        screen[2][(position)] = text_2::farmers[i];
+        position++;
+    }
+    position +=Res.getSpace();
+    possession.buildHome();
+    MyField.BuildFence();
+    
+    stock.hire("April");
+    stock.hire("Carl");
+    stock.hire("Rae");
+    stock.hire("Max");
+    stock.hire("Sue");
+    stock.hire("Chris");
+    stock.hire("Lee");
+    stock.hire("Alex");
+    stock.hire("Bob");
+    stock.hire("Billy");
+    stock.hire("May");
+    stock.hire("Scooter");
+    stock.hire("Tucker");
+    stock.hire("Buck");
+    stock.hire("James");
+    
+    srand(unsigned(time(NULL)));
+    
+    progress.clear();
+    MyField.showField();
+    
+    if (Loading)
+    {
+        load();
+        troops.drawAll();
+    }
+    else
+    {
+        farmers.hire(stock.fire(rand()%10));
+        farmers.hire(stock.fire(rand()%10));
+        troops.addSolder(0, 0, 10, 9999);
+        troops.addSolder(0, 1, 10, 9999);
+        troops.addSolder(0, 2, 10, 9999);
+        
+//        troops.addTank(0, 3, 25, 9999);
+//        troops.addSniper(1, 0, 25, 9999);
+//        troops.addSniper(1, 1, 25, 9999);
+//        troops.addSniper(1, 2, 25, 9999);
+//        troops.addSniper(1, 3, 25, 9999);
+//        addUnit();
+//        addUnit();
+        
+        items.addItem(loader.weapon(Weapon::RustyShovel));
+//        items.addItem(loader.weapon(Weapon::Chain));
+//        items.addItem(loader.weapon(Weapon::FishSword));
+//        items.addItem(loader.weapon(Weapon::DeadlyScalpel));
+//        items.addItem(loader.weapon(Weapon::DoomsDay));
+//        
+//        items.addItem(loader.helmet(Helmet::DoctorCap));
+//        items.addItem(loader.helmet(Helmet::EagleEye));
+//        items.addItem(loader.helmet(Helmet::Lunatic));
+//        items.addItem(loader.helmet(Helmet::MysticRiver));
+//        items.addItem(loader.helmet(Helmet::UltraGoggles));
+//        
+//        items.addItem(loader.gloves(Gloves::ColdSnap));
+//        items.addItem(loader.gloves(Gloves::DeathHug));
+//        items.addItem(loader.gloves(Gloves::DoctorGloves));
+//        items.addItem(loader.gloves(Gloves::HeavyGrips));
+//        items.addItem(loader.gloves(Gloves::Looters));
+//        
+//        items.addItem(loader.boots(Boots::BadSteps));
+//        items.addItem(loader.boots(Boots::GraveWalkers));
+//        items.addItem(loader.boots(Boots::HeavyStompers));
+//        items.addItem(loader.boots(Boots::MondaySocks));
+//        items.addItem(loader.boots(Boots::WildSlippers));
+//        
+//        items.addItem(loader.chest(Chest::ClassySuit));
+//        items.addItem(loader.chest(Chest::IsolationStripes));
+//        items.addItem(loader.chest(Chest::LotharsPlates));
+//        items.addItem(loader.chest(Chest::SharpEdge));
+//        items.addItem(loader.chest(Chest::UthersPride));
+        
+        infoScreen();
+    }
+}
+
+void GameMenu::setUndead()
+{
+    horde.setMoney();
+    horde.setExp();
+    
+    int factor = 1;
+    int money = 0;
+    int exp = 0;
+    
+    srand(unsigned(time(NULL)));
+    
+    int lvl = GlobalTime.getDay();
+    
+    if (lvl > 25)
+    {
+        lvl = 25;
+    }
+    
+    switch (GlobalTime.getDTime())
+    {
+        case DayTime::Dawn:
+            factor = 2.5;
+            break;
+            
+        case DayTime::Night:
+            factor = 2;
+            break;
+            
+            default:
+            factor = 1;
+    }
+    int numberOfUndead = (farmers.getcount()/4 + troops.rollcall()/2 + GlobalTime.getDay()/2.5)*factor+4;
+    
+    if (numberOfUndead > 24)
+    {
+        numberOfUndead = 24;
+    }
+    
+    if (numberOfUndead >= GlobalTime.getDay()/2.5 && GlobalTime.getDay() >= 2)
+    {
+        for (int i = 0; i<GlobalTime.getDay()/2.5; i++)
+        {
+            horde.addLurker(lvl+rand()%4);
+            money += (25+lvl*3);
+            exp   += (20+lvl*4);
+            numberOfUndead--;
+        }
+        
+        if (numberOfUndead >= GlobalTime.getDay()/3 && GlobalTime.getDay() >= 3)
+        {
+            for (int i = 0; i<GlobalTime.getDay()/3; i++)
+            {
+                horde.addGhoul(lvl);
+                money += (50+lvl*4);
+                exp   += (25+lvl*6);
+                numberOfUndead--;
+            }
+            
+            if (numberOfUndead >= GlobalTime.getDay()/3.5 && GlobalTime.getDay() >= 3)
+            {
+                for (int i = 0; i<GlobalTime.getDay()/3.5; i++)
+                {
+                    horde.addBasher(lvl);
+                    money += (150+lvl*9);
+                    exp   += (80+lvl*11);
+                    numberOfUndead--;
+                }
+                
+                if (numberOfUndead >= GlobalTime.getDay()/4 && GlobalTime.getDay() >= 4)
+                {
+                    for (int i = 0; i<GlobalTime.getDay()/4; i++)
+                    {
+                        horde.addLeaper(lvl);
+                        money += (100+lvl*10);
+                        exp   += (200+lvl*12);
+                        numberOfUndead--;
+                    }
+                }
+            }
+        }
+    }
+    while (numberOfUndead > 0)
+    {
+        horde.addWalker(GlobalTime.getDay());
+        money += (15+lvl*3);
+        exp   += (10+lvl*4);
+        numberOfUndead--;
+    }
+    
+    bool remainder = horde.getCount()%8;
+    int waves = horde.getCount()/8 + remainder;
+    horde.setNumberOfWaves(waves);
+    horde.setWave(1);
+    
+    horde.randomize();
+    horde.setMoney(money);
+    horde.setExp(exp);
+    
+    showWaves();
+}
+
+void GameMenu::showWaves()
+{
+    if (horde.getWave())
+    {
+        int l = 0;
+        char waves[] = "Wave";
+        for (int i = 0; i < 4; i++)
+        {
+            CharOut(waves[i], 4, SidePlank/2 + l);
+            l++;
+        }
+        int wave = horde.getWave();
+        l += LenOfNumbers(horde.getWave());
+        for (int i = 0; i < LenOfNumbers(horde.getWave()); i++)
+        {
+            CharOut(wave%10, 4, SidePlank/2 + l);
+            l--;
+            wave /= 10;
+        }
+        l += LenOfNumbers(horde.getWave());
+        l++;
+        CharOut('/', 4, SidePlank/2 + l);
+        l += LenOfNumbers(horde.getNumberOfWaves());
+        wave = horde.getNumberOfWaves();
+        for (int i = 0; i < LenOfNumbers(horde.getNumberOfWaves()); i++)
+        {
+            CharOut(wave%10, 4, SidePlank/2 + l);
+            l--;
+            wave /= 10;
+        }
+    }
+}
+
+void GameMenu::drawUndead()
+{
+    int last = horde.getCount();
+    if (horde.getCount()/8)
+    {
+        last = 8;
+    }
+    
+    for (int card = 0; card<last; card++)
+    {
+        for (int j = 0;j<10; j++)
+        {
+            for (int i = 0; i<10; i++)
+            {
+                if (horde.getUnit(card)->getType() != zombies::blank)
+                {
+                    screen[5+j][2 + i + card*11] = horde.getUnit(card)->getPic(j, i);
+                }
+                else
+                {
+                    screen[5+j][2 + i + card*11] = ' ';
+                }
+            }
+        }
+    }
+    
+    if (!horde.getHead())
+    {
+        side.setMenuOption(options::battle);
+    }
+    else if (checkWasted())
+    {
+        deleteWaves();
+    }
+}
+
+bool GameMenu::isPlant(const char * name) const
+{
+    bool is = false;
+    
+    for (int j = 0; j < numberOfPlants; j++)
+    {
+        if(equals(plants[j],name))
+        {
+            is = true;
+            j = numberOfPlants;
+        }
+    }
+
+    return is;
+}
+
+bool GameMenu::isJob(const char * name) const
+{
+    bool is = false;
+    
+    for (int j = 0; j < numberOfJobs; j++)
+    {
+        if(equals(jobs[j],name))
+        {
+            is = true;
+            j = numberOfJobs;
+        }
+    }
+    
+    return is;
+}
+
+bool GameMenu::isBuilding(const char * name) const
+{
+    bool is = false;
+    
+    for (int j = 0; j < numberOfBuildings; j++)
+    {
+        if(equals(buildings[j],name))
+        {
+            is = true;
+            j = numberOfBuildings;
+        }
+    }
+    
+    return is;
+}
+
+void GameMenu::save()
+{
+    ofstream saveFile("/Users/aleksandrlitvickij/Desktop/Веселый Зомби Фермер/Веселый Зомби Фермер/Save.txt");
+    saveFile<<possession.getHouseSize()<<'\n'<<possession.getRoad()<<'\n'<<MyField.getSize()<<'\n';
+    saveFile<<possession.getTentSize()<<'\n'<<possession.getBarracks()<<'\n';
+    saveFile<<Res.getWood()<<'\n'<<Res.getFood()<<'\n'<<Res.getSeeds()<<'\n'<<Res.getMoney()<<'\n'<<farmers.getcount()<<'\n';
+    saveFile<<GlobalTime.getDay()<<'\n'<<GlobalTime.getHour()<<'\n'<<GlobalTime.getMin()<<'\n';
+    saveFile.close();
+    
+    ofstream Units("/Users/aleksandrlitvickij/Desktop/Веселый Зомби Фермер/Веселый Зомби Фермер/Units.txt");
+    for (int row = 0; row < 2; row++)
+    {
+        for (int card = 0; card < 4; card++)
+        {
+            Units<<troops.getUnit(row, card)->getType()<<'\n'<<troops.getUnit(row, card)->getLvl()<<'\n';
+            Units<<troops.getUnit(row, card)->getExp()<<'\n'<<troops.getUnit(row, card)->gethealth()<<'\n';
+        }
+    }
+    Units.close();
+    ofstream Eve("/Users/aleksandrlitvickij/Desktop/Веселый Зомби Фермер/Веселый Зомби Фермер/Eve.txt");
+    
+    Eve<<list.getCount()<<'\n';
+    event * aloc = list.getHead();
+    for (int i = 0; i<list.getCount(); i++)
+    {
+        
+        if (isPlant(aloc->getName()))
+        {
+//            plant
+            Eve<<aloc->getName()<<'\n';
+            Eve<<aloc->getOption()<<'\n';
+            Eve<<aloc->getDay()<<'\n';
+            Eve<<aloc->getHour()<<'\n';
+            Eve<<aloc->getMin()<<'\n';
+            int l = unsigned(strlen(aloc->getMatrix()[0]));
+            Eve<<l<<'\n';
+            for (int j = 0; j<l; j++)
+            {
+                for (int i = 0; i<l; i++)
+                {
+                    if(aloc->getMatrix()[j][i] == ' ')
+                    {
+                        Eve<<'*';
+                    }
+                    else
+                    {
+                        Eve<<aloc->getMatrix()[j][i];
+                    }
+                }
+                Eve<<'\n';
+            }
+        }
+        
+        else if (isJob(aloc->getName()))
+        {
+            //Job
+            Eve<<aloc->getName()<<'\n';
+            Eve<<aloc->getOption()<<'\n';
+            Eve<<aloc->getDay()<<'\n';
+            Eve<<aloc->getHour()<<'\n';
+            Eve<<aloc->getMin()<<'\n';
+        }
+        
+        else if (isBuilding(aloc->getName()))
+        {
+            //Building
+            Eve<<aloc->getName()<<'\n';
+            Eve<<aloc->getOption()<<'\n';
+            Eve<<aloc->getDay()<<'\n';
+            Eve<<aloc->getHour()<<'\n';
+            Eve<<aloc->getMin()<<'\n';
+        }
+        
+        else
+        {
+            Dial.AddQuote("Something went wrong!");
+            exit(0);
+        }
+        
+        aloc = aloc->getNext();
+    }
+    
+    Eve.close();
+    
+    ofstream Inventory("/Users/aleksandrlitvickij/Desktop/Веселый Зомби Фермер/Веселый Зомби Фермер/Inventory.txt");
+    char buff[20];
+    for (int ITEMS = 0; ITEMS<items.getCount(); ITEMS++)
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            buff[i] = items.getItem(ITEMS)->getTitle(i);
+        }
+        Inventory<<buff<<' ';
+        for (int i = 0; i < 20; i++)
+        {
+            buff[i] = items.getItem(ITEMS)->getName(i);
+        }
+        deflation(buff);
+        Inventory<<buff<<'\n';
+    }
+    Inventory.close();
+    
+    ofstream Equipment("/Users/aleksandrlitvickij/Desktop/Веселый Зомби Фермер/Веселый Зомби Фермер/Equipment.txt");
+    
+    for (int Units = 0; Units<8; Units++)
+    {
+        if (troops.getUnit(Units))
+        {
+            if (troops.getUnit(Units)->getHelmet())
+            {
+                for (int i = 0; i<20; i++)
+                {
+                    buff[i] = troops.getUnit(Units)->getHelmet()->getName(i);
+                }
+                deflation(buff);
+                Equipment<<buff<<'\n';
+            }
+            else
+            {
+                Equipment<<'$'<<'\n';
+            }
+            if (troops.getUnit(Units)->getChest())
+            {
+                for (int i = 0; i<20; i++)
+                {
+                    buff[i] = troops.getUnit(Units)->getChest()->getName(i);
+                }
+                deflation(buff);
+                Equipment<<buff<<'\n';
+            }
+            else
+            {
+                Equipment<<'$'<<'\n';
+            }
+            
+            if (troops.getUnit(Units)->getGloves())
+            {
+                for (int i = 0; i<20; i++)
+                {
+                    buff[i] = troops.getUnit(Units)->getGloves()->getName(i);
+                }
+                deflation(buff);
+                Equipment<<buff<<'\n';
+            }
+            else
+            {
+                Equipment<<'$'<<'\n';
+            }
+            
+            if (troops.getUnit(Units)->getBoots())
+            {
+                for (int i = 0; i<20; i++)
+                {
+                    buff[i] = troops.getUnit(Units)->getBoots()->getName(i);
+                }
+                deflation(buff);
+                Equipment<<buff<<'\n';
+            }
+            else
+            {
+                Equipment<<'$'<<'\n';
+            }
+            
+            if (troops.getUnit(Units)->getWeapon())
+            {
+                for (int i = 0; i<20; i++)
+                {
+                    buff[i] = troops.getUnit(Units)->getWeapon()->getName(i);
+                }
+                deflation(buff);
+                Equipment<<buff<<'\n';
+            }
+            else
+            {
+                Equipment<<'$'<<'\n';
+            }
+    }
+        else
+        {
+            Equipment<<'$'<<'\n'<<'$'<<'\n'<<'$'<<'\n'<<'$'<<'\n'<<'$'<<'\n';
+        }
+    }
+    Equipment.close();
+}
+
+void GameMenu::load()
+{
+    ifstream saveFile("/Users/aleksandrlitvickij/Desktop/Веселый Зомби Фермер/Веселый Зомби Фермер/Save.txt");
+    int wood     = 0;
+    int food     = 0;
+    int seeds    = 0;
+    int money    = 0;
+    int farmer   = 0;
+    int tent     = 0;
+    int house    = 0;
+    int field    = 0;
+    int day      = 0;
+    int hour     = 0;
+    int minute   = 0;
+    bool road    = false;
+    bool baracks = false;
+    
+    saveFile>>house;
+    saveFile>>road;
+    saveFile>>field;
+    saveFile>>tent;
+    saveFile>>baracks;
+    
+    if (road)
+    {
+        possession.buildRoad();
+    }
+    
+    if (baracks)
+    {
+        possession.buildBaracks();
+    }
+    
+    while(possession.getHouseSize() != house)
+    {
+        possession.upgradeHomeSize();
+    }
+    
+    while(possession.getTentSize() != tent)
+    {
+        possession.upgradeTentSize();
+    }
+    
+    while (MyField.getSize() != field)
+    {
+        MyField.upgrade();
+    }
+    
+    saveFile>>wood;
+    saveFile>>food;
+    saveFile>>seeds;
+    saveFile>>money;
+    saveFile>>farmer;
+    
+    Res.load(wood,food,seeds,money);
+    for (int i = 0; i<farmer; i++)
+    {
+        farmers.hire(stock.fire(rand()%10));
+    }
+    
+    saveFile>>day;
+    saveFile>>hour;
+    saveFile>>minute;
+    
+    GlobalTime.load(day, hour, minute);
+
+    saveFile.close();
+    
+    ifstream Units("/Users/aleksandrlitvickij/Desktop/Веселый Зомби Фермер/Веселый Зомби Фермер/Units.txt");
+    int type = 0;
+    int lvl  = 0;
+    int exp  = 0;
+    int hp   = 0;
+    
+    for (int row = 0; row < 2; row++)
+    {
+        for (int card = 0; card < 4; card++)
+        {
+            Units>>type;
+            Units>>lvl;
+            Units>>exp;
+            Units>>hp;
+            switch (type)
+            {
+                case 0:
+                    break;
+                    
+                case 1:
+                    troops.addSolder(row, card, lvl, hp);
+                    troops.getUnit(row, card)->add_exp(exp);
+                    break;
+                    
+                case 2:
+                    troops.addTank(row, card, lvl, hp);
+                    troops.getUnit(row, card)->add_exp(exp);
+                    break;
+                    
+                case 3:
+                    troops.addHealer(row, card, lvl, hp);
+                    troops.getUnit(row, card)->add_exp(exp);
+                    break;
+                    
+                case 4:
+                    troops.addSniper(row, card, lvl, hp);
+                    troops.getUnit(row, card)->add_exp(exp);
+                    break;
+            }
+        }
+    }
+    Units.close();
+    
+    ifstream Eve("/Users/aleksandrlitvickij/Desktop/Веселый Зомби Фермер/Веселый Зомби Фермер/Eve.txt");
+    
+    int  count  = 0;
+    int  option = 0;
+    
+    char buff[30];
+    
+    Eve>>count;
+    for (int i = 0; i<count; i++)
+    {
+        Eve>>buff;
+        if (isPlant(buff))
+        {
+            int l = 0;
+            enum plants type;
+            Eve>>option;
+            
+            switch (option)
+            {
+                case 0:
+                    type = potato;
+                    break;
+                case 1:
+                    type = wheat;
+                    break;
+                case 2:
+                    type = tomato;
+                    break;
+                case 3:
+                    type = carrot;
+                    break;
+                case 4:
+                    type = pumpkin;
+                    break;
+                case 5:
+                    type = strawberry;
+                    break;
+                    
+                default:
+                    Dial.AddQuote("Error!");
+                    exit(0);
+                    break;
+            }
+            
+            Eve>>day;
+            Eve>>hour;
+            Eve>>minute;
+            Eve>>l;
+            
+            int Size = l;
+            char ** Matrix = new char *[l];
+            
+            for (int i = 0; i<l; i++)
+            {
+                Matrix[i] = new char [l];
+            }
+            
+            for (int j = 0; j<l; j++)
+            {
+                Eve>>Matrix[j];
+            }            
+            for (int j = 0; j<l; j++)
+            {
+                for (int i = 0; i<l; i++)
+                {
+                    if(Matrix[j][i] == '*')
+                    {
+                        Matrix[j][i] = ' ';
+                    }
+                }
+            }
+            
+            list.AddPlant(MyField, Matrix,Size, Dial, type, day, hour, minute);
+            
+            for (int i = 0; i < l; i++)
+            {
+                delete []Matrix[i];
+            }
+            delete []Matrix;
+        }
+        
+        else if (isJob(buff))
+        {
+            enum jobs type;
+            Eve>>option;
+            
+            switch (option)
+            {
+                case 0:
+                    type = chop;
+                    break;
+                case 1:
+                    type = adventure;
+                    break;
+                default:
+                    Dial.AddQuote("Error!");
+                    exit(0);
+                    break;
+            }
+            Eve>>day;
+            Eve>>hour;
+            Eve>>minute;
+            list.AddWork(farmers.checkForFreeFarmer(), Dial, type, Res, day, hour, minute);
+        }
+        
+        else if (isBuilding(buff))
+        {
+            
+            enum structures type;
+            Eve>>option;
+            
+            switch (option)
+            {
+                case 0:
+                    type = structures::fence;
+                    break;
+                case 1:
+                    type = structures::road;
+                    break;
+                case 2:
+                    type = structures::house;
+                    break;
+                case 3:
+                    type = structures::tent;
+                    break;
+                case 4:
+                    type = structures::barracks;
+                    break;
+                default:
+                    Dial.AddQuote("Error!");
+                    exit(0);
+                    break;
+            }
+            Eve>>day;
+            Eve>>hour;
+            Eve>>minute;
+            list.AddBuilding(MyField,farmers.checkForFreeFarmer(), Dial, type, possession, screen, day, hour, minute);
+        }
+    }
+    
+    Eve.close();
+    
+    ifstream Inventory("/Users/aleksandrlitvickij/Desktop/Веселый Зомби Фермер/Веселый Зомби Фермер/Inventory.txt");
+    while (!Inventory.eof())
+    {
+        Inventory>>buff;
+        
+        if (equals(buff, "Weapon"))
+        {
+            Inventory>>buff;
+            inflation(buff);
+            items.addItem(loader.weapon(buff));
+        }
+        else if(equals(buff, "Helmet"))
+        {
+            Inventory>>buff;
+            inflation(buff);
+            items.addItem(loader.helmet(buff));
+        }
+        else if(equals(buff, "Chest"))
+        {
+            Inventory>>buff;
+            inflation(buff);
+            items.addItem(loader.chest(buff));
+        }
+        else if(equals(buff, "Gloves"))
+        {
+            Inventory>>buff;
+            inflation(buff);
+            items.addItem(loader.gloves(buff));
+        }
+        else if(equals(buff, "Boots"))
+        {
+            Inventory>>buff;
+            inflation(buff);
+            items.addItem(loader.boots(buff));
+        }
+        else
+        {
+            
+        }
+    }
+    Inventory.close();
+    
+    ifstream Equipment("/Users/aleksandrlitvickij/Desktop/Веселый Зомби Фермер/Веселый Зомби Фермер/Equipment.txt");
+    
+    for (int Units = 0; Units<8; Units++)
+    {
+        unit* UNIT = troops.getUnit(Units);
+        
+        Equipment>>buff;
+        if (buff[0] != '$')
+        {
+            inflation(buff);
+            UNIT->equipHelmet(loader.helmet(buff));
+        }
+        Equipment>>buff;
+        if (buff[0] != '$')
+        {
+            inflation(buff);
+            UNIT->equipChest(loader.chest(buff));
+        }
+        Equipment>>buff;
+        if (buff[0] != '$')
+        {
+            inflation(buff);
+            UNIT->equipGloves(loader.gloves(buff));
+        }
+        Equipment>>buff;
+        if (buff[0] != '$')
+        {
+            inflation(buff);
+            UNIT->equipBoots(loader.boots(buff));
+        }
+        Equipment>>buff;
+        if (buff[0] != '$')
+        {
+            inflation(buff);
+            UNIT->equipWeapon(loader.weapon(buff));
+        }
+    }
+    
+    Equipment.close();
+}
+
+void GameMenu::showTime()
+{
+        CharOut(GlobalTime.getHour()/10, 2, y-7);
+        CharOut(GlobalTime.getHour()%10, 2, y-6);
+    
+        CharOut(GlobalTime.getMin()/10, 2, y-4);
+        CharOut(GlobalTime.getMin()%10, 2, y-3);
+
+        CharOut(GlobalTime.getDay()/10, 2, SidePlank+7);
+        CharOut(GlobalTime.getDay()%10, 2, SidePlank+8);
+    
+    if(GlobalTime.getDTime() == DayTime::Day)
+    {
+        CharOut(char(30), 2, (y-SidePlank)/2+SidePlank-2);
+    }
+    else if(GlobalTime.getDTime() == DayTime::Dawn)
+    {
+        CharOut(char(7), 2, (y-SidePlank)/2+SidePlank-2);
+    }
+    else
+    {
+        CharOut(char(9), 2, (y-SidePlank)/2+SidePlank-2);
+    }
+}
+void GameMenu::CharOut(char ch, int i, int j)
+{
+    if(i<x && i>0 && j<y && j>0)
+    {
+        screen[i][j] = ch;
+    }
+}
+void GameMenu::CharOut(int num, int i, int j)
+{
+    if(i<x && i>0 && j<y && j>0)
+    {
+        screen[i][j] = (char)((int)'0')+num;
+    }
+}
+void GameMenu::showSide()
+{
+    for(int j = 1; j<side.get_sx(); j++)
+    {
+        for (int i = 1; i<side.get_sy(); i++)
+        {
+           screen[j+BottomPlank][i+SidePlank] = side.get_screen()[j][i];
+        }
+    }
+}
+
+void GameMenu::mapping(int &position,const int num)
+{
+    int n = num;
+    int max = Res.getMax();
+    int i = Res.getSpace()/2;
+    if (!n)
+    {
+        CharOut(n, Res.getInit_y(), position+i);
+        while (max)
+        {
+            i--;
+            max /=10;
+            CharOut(' ', Res.getInit_y(), position+i);
+        }
+    }
+    else
+    {
+        while (max != 0)
+        {
+            {
+                if (n)
+                {
+                    CharOut(n%10, Res.getInit_y(), position+i);
+                    n = n/10;
+                }
+                else
+                {
+                    CharOut(' ', Res.getInit_y(), position+i);
+                }
+                i--;
+                max = max/10;
+            }
+        }
+    }
+}
+
+void GameMenu::mapResources()
+{
+    int position = Res.getInit_x()+unsigned(strlen(text_2::wood));
+    int num = Res.getWood();
+    mapping(position, num);
+    
+    position += Res.getSpace()+unsigned(strlen(text_2::seeds));
+    num = Res.getSeeds();
+    mapping(position, num);
+
+    position += Res.getSpace()+unsigned(strlen(text_2::food));
+    num = Res.getFood();
+    mapping(position, num);
+    
+    position += Res.getSpace()+unsigned(strlen(text_2::money));
+    num = Res.getMoney();
+    mapping(position, num);
+    
+    int Position = position + Res.getSpace()+unsigned(strlen(text_2::farmers));
+    int i = Res.getSpace()/2;
+    for (int j = 0; j<SidePlank - Position; j++)
+    {
+        CharOut(' ', Res.getInit_y(), Position + j);
+    }
+    position += Res.getSpace()+unsigned(strlen(text_2::farmers));
+    num = farmers.getcount();
+    do
+    {
+        int n = num%10;
+        CharOut(n, Res.getInit_y(),position+i);
+        num = num/10;
+        i--;
+        CharOut('/',Res.getInit_y(),position+i);
+    }
+    while(num!=0);
+    num = farmers.freeFarmers();
+    do
+    {
+        i--;
+        int n = num%10;
+        CharOut(n, Res.getInit_y(),position+i);
+        num = num/10;
+    }
+    while(num!=0);
+
+}
+
+void GameMenu::seeder()
+{
+    int l1 = x1;
+    int l2 = x2;
+    int h1 = y1;
+    int h2 = y2;
+    
+    if (l1>l2)
+    {
+        l1 = x2;
+        l2 = x1;
+    }
+    if (h1>h2)
+    {
+        h1 = y2;
+        h2 = y1;
+    }
+    
+    for (int j = h1; j<h2+1; j++)
+    {
+        for (int i = l1; i<l2+1; i++)
+        {
+            if(screen[j][i] == ' ')
+            {
+            CharOut('.', j, i);
+            }
+        }
+    }
+
+}
+
+void GameMenu::setPlants(enum plants p)
+{
+    plant = p;
+}
+
+void GameMenu::showDialog()
+{
+    for (int j = 1; j<Dial.getPx()-1; j++)
+    {
+        for (int i = 1; i<Dial.getPy()-1; i++)
+        {
+            screen[BottomPlank+j][i] = Dial.getBox()[j][i];
+        }
+    }
+}
+
+GameMenu::~GameMenu()
+{
+    for(int i = 0; i < x; i++)
+    {
+        delete [] screen[i];
+    }
+    delete [] screen;
+}
